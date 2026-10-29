@@ -3,14 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Panel - Local Hostinger Dashboard</title>
+  <title>Admin Panel - SportBanter Hub</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
       darkMode: 'class',
       theme: {
         extend: {
-          colors: { stadium: '#0B0F17', neon: '#22C55E', stadiumCard: '#131A27' }
+          colors: {
+            stadium: '#0B0F17',
+            neon: '#22C55E',
+            stadiumCard: '#131A27'
+          }
         }
       }
     }
@@ -20,148 +24,240 @@
 
   <!-- LOGIN BOX -->
   <div id="login-box" class="bg-stadiumCard border border-slate-800 p-8 rounded-2xl max-w-md w-full shadow-2xl">
-    <h2 class="text-xl font-black text-neon tracking-wider uppercase mb-4">Local Admin Portal</h2>
+    <div class="flex items-center gap-2 mb-6">
+      <span class="text-2xl">⚙️</span>
+      <h2 class="text-xl font-black text-neon tracking-wider uppercase">Admin Portal</h2>
+    </div>
+    <p class="text-xs text-slate-400 mb-6">Enter your administrator credentials to access the management dashboard.</p>
+    
     <div class="space-y-4">
       <div>
-        <label class="block text-xs font-bold text-slate-400 mb-1 uppercase">Username</label>
-        <input type="text" id="login-username" placeholder="default: admin" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-slate-200">
+        <label class="block text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">Username</label>
+        <input type="text" id="login-username" placeholder="default: admin" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-neon transition">
       </div>
       <div>
-        <label class="block text-xs font-bold text-slate-400 mb-1 uppercase">Password</label>
-        <input type="password" id="login-password" placeholder="default: admin123" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-slate-200">
+        <label class="block text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">Password</label>
+        <input type="password" id="login-password" placeholder="default: admin123" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-neon transition">
       </div>
-      <button onclick="login()" class="w-full bg-neon text-black font-extrabold py-3 rounded-xl text-xs uppercase transition mt-2">Login 🚀</button>
+      <button onclick="login()" class="w-full bg-gradient-to-r from-emerald-600 to-neon text-black font-extrabold py-3 rounded-xl text-xs uppercase tracking-widest transition shadow-lg shadow-neon/20 mt-2">Login to Dashboard 🚀</button>
     </div>
   </div>
 
-  <!-- DASHBOARD -->
+  <!-- MAIN DASHBOARD CONTAINER -->
   <div id="dashboard" class="bg-stadiumCard border border-slate-800 p-6 sm:p-8 rounded-2xl max-w-2xl w-full shadow-2xl hidden my-8">
-    <div class="flex justify-between items-center mb-6 border-b border-slate-800 pb-4">
-      <h2 class="text-lg font-black text-neon uppercase">Local Control Center</h2>
-      <div class="flex gap-2">
-        <button onclick="switchTab('upload')" id="tab-upload" class="text-xs bg-neon text-black font-extrabold px-3.5 py-2 rounded-xl">Upload File</button>
-        <button onclick="switchTab('extractor')" id="tab-extractor" class="text-xs bg-slate-900 text-slate-300 font-bold px-3.5 py-2 rounded-xl border border-slate-800">Video Downloader 📥</button>
-        <a href="index.html" class="text-xs bg-slate-800 text-slate-200 font-bold px-3.5 py-2 rounded-xl">View Site ➔</a>
+    
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 border-b border-slate-800 pb-4">
+      <h2 class="text-lg font-black text-neon uppercase tracking-wider">Admin Control Center</h2>
+      <div class="flex flex-wrap gap-2">
+        <button onclick="switchTab('upload')" id="tab-upload" class="text-xs bg-neon text-black font-extrabold px-3.5 py-2 rounded-xl transition shadow">Upload File</button>
+        <button onclick="switchTab('settings')" id="tab-settings" class="text-xs bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold px-3.5 py-2 rounded-xl transition border border-slate-800">Settings ⚙️</button>
+        <a href="index.html" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold px-3.5 py-2 rounded-xl transition border border-slate-700">View Site ➔</a>
       </div>
     </div>
 
-    <!-- TAB 1: LOCAL UPLOAD -->
+    <!-- TAB 1: UPLOAD & SEO TAGS -->
     <div id="section-upload">
-      <form id="upload-form" onsubmit="uploadLocalFile(event)" class="space-y-4">
+      <form id="upload-form" onsubmit="uploadMeme(event)" class="space-y-4">
         <div>
-          <label class="block text-xs font-bold text-slate-400 mb-1 uppercase">Meme Title / Caption</label>
-          <input type="text" id="title" required placeholder="Goal of the season!" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-slate-200">
+          <label class="block text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">Meme Title / Caption</label>
+          <input type="text" id="title" required placeholder="e.g. Unbelievable last minute goal!" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-neon transition">
         </div>
+
         <div>
-          <label class="block text-xs font-bold text-slate-400 mb-1 uppercase">SEO Tags & Hashtags</label>
-          <input type="text" id="seo_tags" placeholder="#championsleague #football" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-slate-200">
+          <label class="block text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">SEO Tags & Hashtags</label>
+          <input type="text" id="seo_tags" placeholder="e.g. #championsleague #football #viralgoals" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-neon transition">
         </div>
+
         <div>
-          <label class="block text-xs font-bold text-slate-400 mb-1 uppercase">Select Local Media File</label>
-          <input type="file" id="media_file" accept="image/*,video/mp4,image/gif" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-300">
+          <label class="block text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">Select Local Media File</label>
+          <input type="file" id="media_file" accept="image/*,video/mp4,image/gif" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-300 file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-extrabold file:bg-neon file:text-black hover:file:bg-emerald-400 cursor-pointer">
         </div>
-        <div class="grid grid-cols-2 gap-4">
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
           <div>
-            <label class="block text-xs font-bold text-slate-400 mb-1 uppercase">Sport</label>
-            <select id="sport" onchange="updateCompetitions('upload')" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-slate-200 font-bold">
+            <label class="block text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">Sport</label>
+            <select id="sport" onchange="updateCompetitions()" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-slate-200 font-bold focus:outline-none focus:border-neon">
               <option value="football">⚽ Football</option>
               <option value="basketball">🏀 Basketball</option>
             </select>
           </div>
+
           <div>
-            <label class="block text-xs font-bold text-slate-400 mb-1 uppercase">Competition</label>
-            <select id="competition" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-slate-200 font-bold"></select>
+            <label class="block text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">Competition / League</label>
+            <select id="competition" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-slate-200 font-bold focus:outline-none focus:border-neon">
+              <!-- Populated dynamically -->
+            </select>
           </div>
         </div>
-        <button type="submit" id="submit-btn" class="w-full bg-neon text-black font-extrabold py-3 rounded-xl text-xs uppercase mt-4">Save to Local Database 🚀</button>
+
+        <button type="submit" id="submit-btn" class="w-full bg-gradient-to-r from-emerald-600 to-neon text-black font-extrabold py-3 rounded-xl text-xs uppercase tracking-widest transition shadow-lg shadow-neon/20 mt-6">Upload & Publish Meme 🚀</button>
         <p id="status-msg" class="text-center text-xs mt-3 font-bold"></p>
       </form>
     </div>
 
-    <!-- TAB 2: LOCAL DEVICE VIDEO DOWNLOADER UTILITY -->
-    <div id="section-extractor" class="hidden space-y-4">
-      <h3 class="text-xs font-bold text-slate-300 uppercase">Save Social Video Locally</h3>
-      <p class="text-[11px] text-slate-500">Paste any direct video link to instantly download the file straight to your local device so you can upload it safely.</p>
+    <!-- TAB 2: ACCOUNT SETTINGS -->
+    <div id="section-settings" class="hidden space-y-4">
+      <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Change Admin Credentials</h3>
       
-      <div class="flex gap-2">
-        <input type="url" id="extract-link" placeholder="Paste direct .mp4 or media link..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-slate-200">
-        <a id="download-trigger" href="#" target="_blank" download class="bg-neon text-black font-extrabold px-4 py-2.5 rounded-xl text-xs flex items-center justify-center transition whitespace-nowrap">Download File 💾</a>
+      <div>
+        <label class="block text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">New Username</label>
+        <input type="text" id="new-username" placeholder="Enter new username" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-neon">
       </div>
-      <p class="text-[10px] text-slate-400">Once downloaded to your device, switch back to the "Upload File" tab to publish it instantly!</p>
+
+      <div>
+        <label class="block text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">New Password</label>
+        <input type="password" id="new-password" placeholder="Enter new password" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-neon">
+      </div>
+
+      <button onclick="saveAccountSettings()" class="w-full bg-gradient-to-r from-emerald-600 to-neon text-black font-extrabold py-3 rounded-xl text-xs uppercase tracking-widest transition mt-4">Save Account Settings 💾</button>
+      <p id="settings-msg" class="text-center text-xs mt-3 font-bold"></p>
     </div>
 
   </div>
 
+  <!-- SUPABASE JS CLIENT -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
+    const SUPABASE_URL = 'https://ayfkiofamrnnsmerfcpf.supabase.co';
+    const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_67CCvUlVyJCJukihrXheHg_CNCiP5VM';
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
     const leagues = {
       football: ['Champions League', 'Europa League', 'Conference League', 'National Teams', 'Premier League', 'La Liga', 'Serie A', 'Bundesliga', 'Ligue 1', 'Eredivisie', 'Primeira Liga', 'Belgian Pro League', 'Greek Super League'],
       basketball: ['NBA', 'EuroLeague', 'National Teams']
     };
 
+    function getCredentials() {
+      return {
+        user: localStorage.getItem('admin_user') || 'admin',
+        pass: localStorage.getItem('admin_pass') || 'admin123'
+      };
+    }
+
     function login() {
-      const u = document.getElementById('login-username').value;
-      const p = document.getElementById('login-password').value;
-      if ((u === 'admin' && p === 'admin123') || (u === localStorage.getItem('admin_user') && p === localStorage.getItem('admin_pass'))) {
+      const uInput = document.getElementById('login-username').value.trim();
+      const pInput = document.getElementById('login-password').value.trim();
+      const creds = getCredentials();
+
+      if (uInput === creds.user && pInput === creds.pass) {
         document.getElementById('login-box').style.display = 'none';
         document.getElementById('dashboard').style.display = 'block';
-        updateCompetitions('upload');
+        updateCompetitions();
       } else {
-        alert('Invalid credentials!');
+        alert('Invalid Username or Password!');
       }
     }
 
     function switchTab(tab) {
-      ['upload', 'extractor'].forEach(t => {
-        document.getElementById(`section-${t}`).classList.toggle('hidden', t !== tab);
-        document.getElementById(`tab-${t}`).className = t === tab ? "text-xs bg-neon text-black font-extrabold px-3.5 py-2 rounded-xl" : "text-xs bg-slate-900 text-slate-300 font-bold px-3.5 py-2 rounded-xl border border-slate-800";
+      ['upload', 'settings'].forEach(t => {
+        const sec = document.getElementById(`section-${t}`);
+        const btn = document.getElementById(`tab-${t}`);
+        if (t === tab) {
+          sec.classList.remove('hidden');
+          btn.className = "text-xs bg-neon text-black font-extrabold px-3.5 py-2 rounded-xl transition shadow";
+        } else {
+          sec.classList.add('hidden');
+          btn.className = "text-xs bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold px-3.5 py-2 rounded-xl transition border border-slate-800";
+        }
       });
+      
+      if(tab === 'settings') {
+        const creds = getCredentials();
+        document.getElementById('new-username').value = creds.user;
+      }
+    }
+
+    function saveAccountSettings() {
+      const newU = document.getElementById('new-username').value.trim();
+      const newP = document.getElementById('new-password').value.trim();
+      const msg = document.getElementById('settings-msg');
+
+      if (!newU || !newP) {
+        msg.className = "text-center text-xs mt-3 font-bold text-red-400";
+        msg.innerText = "Username and password cannot be empty!";
+        return;
+      }
+
+      localStorage.setItem('admin_user', newU);
+      localStorage.setItem('admin_pass', newP);
+
+      msg.className = "text-center text-xs mt-3 font-bold text-neon";
+      msg.innerText = "Account settings saved successfully!";
     }
 
     function updateCompetitions() {
       const sport = document.getElementById('sport').value;
-      document.getElementById('competition').innerHTML = leagues[sport].map(l => `<option value="${l}">${l}</option>`).join('');
+      const compSelect = document.getElementById('competition');
+      compSelect.innerHTML = leagues[sport].map(l => `<option value="${l}">${l}</option>`).join('');
     }
 
-    document.getElementById('extract-link').addEventListener('input', function() {
-      document.getElementById('download-trigger').href = this.value;
-    });
-
-    async function uploadLocalFile(e) {
+    async function uploadMeme(e) {
       e.preventDefault();
-      const fileInput = document.getElementById('media_file');
-      const file = fileInput.files[0];
+      const btn = document.getElementById('submit-btn');
       const msg = document.getElementById('status-msg');
+      const fileInput = document.getElementById('media_file');
+      
+      if (!fileInput.files || fileInput.files.length === 0) {
+        alert("Please select a file to upload.");
+        return;
+      }
 
-      if (!file) return;
+      const file = fileInput.files[0];
+      btn.disabled = true;
+      btn.innerText = 'Uploading file to storage...';
+      msg.innerText = '';
 
-      let mediaType = 'image';
-      if (file.type.includes('gif')) mediaType = 'gif';
-      else if (file.type.includes('video') || file.name.endsWith('.mp4')) mediaType = 'video';
+      try {
+        let mediaType = 'image';
+        if (file.type.includes('gif')) {
+          mediaType = 'gif';
+        } else if (file.type.includes('video') || file.name.endsWith('.mp4')) {
+          mediaType = 'video';
+        }
 
-      const titleText = document.getElementById('title').value;
-      const seoTags = document.getElementById('seo_tags').value;
-      const fullTitle = seoTags ? `${titleText} — ${seoTags}` : titleText;
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+        const filePath = `uploads/${fileName}`;
 
-      // In a pure static Hostinger setup without backend server scripts (Node/PHP), 
-      // simulation of saving to posts.json via client localStorage or direct prompt generation:
-      const newPost = {
-        title: fullTitle,
-        media_url: URL.createObjectURL(file), // Local object URL representation for immediate viewing
-        type: mediaType,
-        sport: document.getElementById('sport').value,
-        competition: document.getElementById('competition').value,
-        created_at: new Date().toISOString()
-      };
+        const { error: storageError } = await supabaseClient.storage
+          .from('memes')
+          .upload(filePath, file, { cacheControl: '3600', upsert: false });
 
-      // Save to browser temporary local storage database simulation
-      let existingPosts = JSON.parse(localStorage.getItem('local_posts') || '[]');
-      existingPosts.unshift(newPost);
-      localStorage.setItem('local_posts', JSON.stringify(existingPosts));
+        if (storageError) throw storageError;
 
-      msg.className = "text-center text-xs mt-3 font-bold text-neon";
-      msg.innerText = "Success! Saved locally.";
-      document.getElementById('upload-form').reset();
-      updateCompetitions();
+        const { data: publicUrlData } = supabaseClient.storage
+          .from('memes')
+          .getPublicUrl(filePath);
+
+        const titleText = document.getElementById('title').value;
+        const seoTags = document.getElementById('seo_tags').value;
+        const fullTitle = seoTags ? `${titleText} — ${seoTags}` : titleText;
+
+        const payload = {
+          title: fullTitle,
+          media_url: publicUrlData.publicUrl,
+          type: mediaType,
+          sport: document.getElementById('sport').value,
+          competition: document.getElementById('competition').value,
+          source: 'Cloud Upload',
+          created_at: new Date().toISOString()
+        };
+
+        const { error: dbError } = await supabaseClient.from('posts').insert([payload]);
+        if (dbError) throw dbError;
+
+        msg.className = 'text-center text-xs mt-3 font-bold text-neon';
+        msg.innerText = 'Success! File uploaded and published.';
+        document.getElementById('upload-form').reset();
+        updateCompetitions();
+
+      } catch (err) {
+        msg.className = 'text-center text-xs mt-3 font-bold text-red-400';
+        msg.innerText = `Upload Error: ${err.message}`;
+      } finally {
+        btn.disabled = false;
+        btn.innerText = 'Upload & Publish Meme 🚀';
+      }
     }
   </script>
 </body>
