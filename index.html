@@ -21,12 +21,6 @@
       }
     }
   </script>
-  <style>
-    ::-webkit-scrollbar { width: 8px; height: 8px; }
-    ::-webkit-scrollbar-track { background: #0B0F17; }
-    ::-webkit-scrollbar-thumb { background: #1F2937; border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: #10B981; }
-  </style>
 </head>
 <body class="bg-stadium text-slate-100 min-h-screen flex flex-col font-sans antialiased selection:bg-neon selection:text-black" onclick="closeAllShareMenus(event)">
 
@@ -42,7 +36,6 @@
   <header class="border-b border-slate-800/80 sticky top-0 bg-stadium/95 backdrop-blur-md z-30 shadow-2xl">
     <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col gap-3">
       
-      <!-- Top Row: Logo, Search & Admin -->
       <div class="flex flex-col md:flex-row justify-between items-center gap-3">
         <a href="index.html" class="flex items-center gap-2.5 group">
           <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 via-neon to-amber-400 p-0.5 shadow-lg shadow-neon/20 group-hover:scale-105 transition duration-300">
@@ -106,7 +99,7 @@
     </div>
   </header>
 
-  <!-- MAIN WRAPPER WITH PC SIDE ADS -->
+  <!-- MAIN FEED WRAPPER -->
   <div class="max-w-[1500px] mx-auto w-full flex-grow flex gap-4 p-4">
     <aside class="hidden xl:block w-[160px] flex-shrink-0">
       <div class="sticky top-44 bg-slate-900/60 border border-dashed border-slate-800 rounded-2xl p-3 text-center min-h-[600px] flex flex-col items-center justify-center gap-2 text-slate-500 shadow-xl">
@@ -118,15 +111,10 @@
     <main class="flex-grow w-full max-w-6xl mx-auto flex flex-col">
       <div id="loading" class="text-center py-24 text-slate-400 font-bold animate-pulse flex flex-col items-center gap-3">
         <div class="w-10 h-10 border-4 border-neon border-t-transparent rounded-full animate-spin"></div>
-        <span>LOADING VIRAL SPORTS CONTENT...</span>
+        <span>LOADING LOCAL MEMES...</span>
       </div>
       
       <div id="feed-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
-      
-      <div class="my-8 w-full bg-slate-900/90 border border-dashed border-slate-800 rounded-2xl p-6 text-center text-xs text-slate-500 flex flex-col items-center justify-center gap-2 shadow-lg">
-        <span class="bg-amber-500/20 text-amber-400 text-[10px] px-2.5 py-0.5 rounded-full font-extrabold uppercase tracking-widest">SPONSORED FEED AD</span>
-        <span>In-Feed Native Advertisement / Banner Slot</span>
-      </div>
     </main>
 
     <aside class="hidden xl:block w-[160px] flex-shrink-0">
@@ -137,18 +125,7 @@
     </aside>
   </div>
 
-  <!-- FIXED BOTTOM STICKY BANNER -->
-  <div class="sticky bottom-0 z-40 bg-stadium/95 backdrop-blur-md border-t border-slate-800 p-2 text-center shadow-2xl">
-    <div class="max-w-4xl mx-auto bg-slate-900 border border-dashed border-slate-700/60 rounded-xl p-2 text-xs text-slate-400 flex items-center justify-between px-4">
-      <div class="flex items-center gap-2">
-        <span class="bg-amber-500/20 text-amber-400 border border-amber-500/30 text-[9px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">SPONSORED</span>
-        <span class="text-[11px] font-medium hidden sm:inline">Sticky Bottom Anchor Banner (320x50 / 728x90)</span>
-      </div>
-      <button onclick="this.parentElement.parentElement.remove()" class="text-slate-500 hover:text-white font-bold text-sm px-1.5">&times;</button>
-    </div>
-  </div>
-
-  <!-- LEGAL FOOTER -->
+  <!-- FOOTER -->
   <footer class="bg-slate-950 border-t border-slate-800/80 mt-12 py-10 px-4 text-xs text-slate-400">
     <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
       <div class="space-y-3">
@@ -156,37 +133,15 @@
           <span class="text-lg">⚽</span>
           <span class="font-black text-sm tracking-wider text-slate-200">SPORTBANTER</span>
         </div>
-        <p class="text-slate-500 leading-relaxed text-[11px]">The ultimate daily hub for football, basketball, and viral sports memes, reactions, clips, and highlights.</p>
-      </div>
-      <div class="space-y-2">
-        <h4 class="font-bold text-slate-200 text-[11px] uppercase tracking-wider">Competitions</h4>
-        <ul class="space-y-1 text-slate-500">
-          <li><a href="#" class="hover:text-neon transition">UEFA Champions League</a></li>
-          <li><a href="#" class="hover:text-neon transition">NBA & EuroLeague</a></li>
-          <li><a href="#" class="hover:text-neon transition">European Football Leagues</a></li>
-        </ul>
-      </div>
-      <div class="space-y-2">
-        <h4 class="font-bold text-slate-200 text-[11px] uppercase tracking-wider">Legal Information</h4>
-        <ul class="space-y-1 text-slate-500">
-          <li><a href="#" onclick="openLegalModal('privacy'); return false;" class="hover:text-neon transition">Privacy Policy</a></li>
-          <li><a href="#" onclick="openLegalModal('terms'); return false;" class="hover:text-neon transition">Terms of Service</a></li>
-          <li><a href="#" onclick="openLegalModal('dmca'); return false;" class="hover:text-neon transition">DMCA & Copyright Takedown</a></li>
-          <li><a href="#" onclick="openLegalModal('cookies'); return false;" class="hover:text-neon transition">Cookie Preferences</a></li>
-        </ul>
-      </div>
-      <div class="space-y-2">
-        <h4 class="font-bold text-slate-200 text-[11px] uppercase tracking-wider">Content Disclaimer</h4>
-        <p class="text-[10px] text-slate-500 leading-relaxed">All media content uploaded or embedded belongs to their respective rights holders under fair use guidelines.</p>
+        <p class="text-slate-500 leading-relaxed text-[11px]">The ultimate daily local database hub for sports memes and highlights.</p>
       </div>
     </div>
-    <div class="max-w-6xl mx-auto pt-8 mt-8 border-t border-slate-900 flex flex-col sm:flex-row justify-between items-center gap-4 text-[11px] text-slate-600">
-      <span>&copy; 2026 SPORTBANTER. All Rights Reserved. Hosted on Hostinger.</span>
-      <span>Designed for Sports Fans Worldwide 🏆</span>
+    <div class="max-w-6xl mx-auto pt-8 mt-8 border-t border-slate-900 text-center text-[11px] text-slate-600">
+      <span>&copy; 2026 SPORTBANTER. Hosted Locally on Hostinger.</span>
     </div>
   </footer>
 
-  <!-- FULLSCREEN MODAL -->
+  <!-- MODAL & TOAST -->
   <div id="media-modal" class="fixed inset-0 bg-black/95 z-50 hidden flex-col items-center justify-center p-4 backdrop-blur-md">
     <button onclick="closeModal()" class="absolute top-6 right-6 text-slate-400 hover:text-white text-3xl font-bold bg-slate-900/90 px-3.5 py-1 rounded-full border border-slate-700">&times;</button>
     <div class="max-w-4xl max-h-[80vh] w-full flex items-center justify-center overflow-hidden rounded-2xl bg-stadiumCard border border-slate-800 shadow-2xl">
@@ -194,26 +149,10 @@
     </div>
     <p id="modal-title" class="text-slate-200 mt-4 text-center font-bold max-w-xl text-base px-4"></p>
   </div>
-
-  <!-- LEGAL MODAL -->
-  <div id="legal-modal" class="fixed inset-0 bg-black/90 z-50 hidden flex-col items-center justify-center p-4">
-    <div class="max-w-2xl w-full bg-slate-900 border border-slate-800 rounded-2xl p-6 relative max-h-[80vh] overflow-y-auto">
-      <button onclick="closeLegalModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-2xl font-bold">&times;</button>
-      <h3 id="legal-title" class="text-lg font-black text-neon mb-4 uppercase tracking-wider"></h3>
-      <div id="legal-body" class="text-xs text-slate-300 leading-relaxed space-y-3"></div>
-    </div>
-  </div>
-
-  <!-- TOAST -->
   <div id="toast" class="fixed bottom-16 right-6 bg-gradient-to-r from-emerald-600 to-neon text-black font-extrabold px-4 py-2.5 rounded-xl shadow-2xl hidden z-50 text-xs transition">Link copied to clipboard! 🚀</div>
 
-  <!-- SUPABASE JS CLIENT -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- LOCAL JAVASCRIPT FETCHING posts.json -->
   <script>
-    const SUPABASE_URL = 'https://ayfkiofamrnnsmerfcpf.supabase.co';
-    const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_67CCvUlVyJCJukihrXheHg_CNCiP5VM';
-    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
-
     const leagues = {
       football: ['Champions League', 'Europa League', 'Conference League', 'National Teams', 'Premier League', 'La Liga', 'Serie A', 'Bundesliga', 'Ligue 1', 'Eredivisie', 'Primeira Liga', 'Belgian Pro League', 'Greek Super League'],
       basketball: ['NBA', 'EuroLeague', 'National Teams']
@@ -223,14 +162,13 @@
     let searchQuery = '';
 
     async function fetchMemes() {
-      const { data, error } = await supabaseClient.from('posts').select('*').order('created_at', { ascending: false });
-      document.getElementById('loading').style.display = 'none';
-
-      if (error) {
-        document.getElementById('feed-grid').innerHTML = `<p class="text-red-400 col-span-full text-center font-bold py-10">Error loading feed: ${error.message}</p>`;
-        return;
+      try {
+        const response = await fetch('posts.json?' + new Date().getTime());
+        allPosts = await response.json();
+      } catch (err) {
+        allPosts = []; // Empty if posts.json doesn't exist yet
       }
-      allPosts = data || [];
+      document.getElementById('loading').style.display = 'none';
       renderFeed();
     }
 
@@ -284,7 +222,7 @@
       document.getElementById('item-count').innerText = `${filtered.length} Memes`;
 
       if (filtered.length === 0) {
-        grid.innerHTML = '<div class="col-span-full text-center py-24 text-slate-500 font-bold">NO MEMES FOUND MATCHING THESE CRITERIA.</div>';
+        grid.innerHTML = '<div class="col-span-full text-center py-24 text-slate-500 font-bold">NO MEMES FOUND IN LOCAL DATABASE.</div>';
         return;
       }
 
@@ -296,47 +234,33 @@
 
         const safeTitle = (post.title || '').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
         const encodedUrl = encodeURIComponent(post.media_url);
-        const encodedText = encodeURIComponent(`Check out this sports meme: ${post.title} ${post.media_url}`);
+        const encodedText = encodeURIComponent(`Check out this sports meme: ${post.title}`);
 
         return `
           <div class="group bg-stadiumCard rounded-2xl overflow-hidden border border-slate-800/80 flex flex-col shadow-xl hover:border-slate-700 transition duration-300">
             <div onclick="openModal('${post.media_url}', '${safeTitle}', '${post.type}')" class="h-64 bg-black flex items-center justify-center overflow-hidden relative cursor-pointer">
               ${mediaHtml}
               <div class="absolute top-3 right-3 flex gap-1.5">
-                <span class="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-black/80 text-neon border border-neon/30 backdrop-blur-md shadow-md">
-                  ${post.type || 'IMAGE'}
-                </span>
+                <span class="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-black/80 text-neon border border-neon/30 backdrop-blur-md shadow-md">${post.type}</span>
               </div>
               <div class="absolute bottom-3 left-3">
-                <span class="text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-lg bg-stadium/90 text-amber-400 border border-amber-500/30 backdrop-blur-md shadow-md">
-                  🏆 ${post.competition || post.sport}
-                </span>
+                <span class="text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-lg bg-stadium/90 text-amber-400 border border-amber-500/30 backdrop-blur-md shadow-md">🏆 ${post.competition}</span>
               </div>
             </div>
 
             <div class="p-4 flex flex-col flex-grow justify-between gap-3">
               <h3 onclick="openModal('${post.media_url}', '${safeTitle}', '${post.type}')" class="text-sm font-bold text-slate-100 line-clamp-2 cursor-pointer hover:text-neon transition leading-snug">${post.title}</h3>
               
-              <!-- CONSOLIDATED SHARE BUTTON & DROPDOWN MENU -->
               <div class="pt-2 border-t border-slate-800/80 flex justify-end relative">
-                <button onclick="toggleShareMenu(event, ${index})" class="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-xs font-bold text-slate-300 rounded-xl border border-slate-800 transition flex items-center gap-1.5 shadow">
-                  <span>Share ↗</span>
-                </button>
-
-                <!-- Dropdown Menu -->
+                <button onclick="toggleShareMenu(event, ${index})" class="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-xs font-bold text-slate-300 rounded-xl border border-slate-800 transition shadow">Share ↗</button>
                 <div id="share-menu-${index}" class="hidden absolute bottom-10 right-0 w-48 bg-slate-900 border border-slate-800 rounded-xl shadow-2xl z-40 py-1.5 text-xs">
-                  <a href="https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}" target="_blank" class="flex items-center gap-2 px-3.5 py-2 hover:bg-slate-800 text-slate-300 hover:text-white transition">📘 Facebook</a>
-                  <a href="https://www.instagram.com/" target="_blank" onclick="copyLink('${post.media_url}')" class="flex items-center gap-2 px-3.5 py-2 hover:bg-slate-800 text-slate-300 hover:text-white transition" title="Copies link for Instagram">📸 Instagram (Copy Link)</a>
-                  <a href="https://twitter.com/intent/tweet?text=${encodedText}" target="_blank" class="flex items-center gap-2 px-3.5 py-2 hover:bg-slate-800 text-slate-300 hover:text-white transition">✖️ X (Twitter)</a>
-                  <a href="fb-messenger://share?link=${encodedUrl}" target="_blank" class="flex items-center gap-2 px-3.5 py-2 hover:bg-slate-800 text-slate-300 hover:text-white transition">💬 Messenger</a>
-                  <a href="https://api.whatsapp.com/send?text=${encodedText}" target="_blank" class="flex items-center gap-2 px-3.5 py-2 hover:bg-slate-800 text-slate-300 hover:text-white transition">🟢 WhatsApp</a>
-                  <a href="viber://forward?text=${encodedText}" class="flex items-center gap-2 px-3.5 py-2 hover:bg-slate-800 text-slate-300 hover:text-white transition">🟣 Viber</a>
-                  <a href="sms:?body=${encodedText}" class="flex items-center gap-2 px-3.5 py-2 hover:bg-slate-800 text-slate-300 hover:text-white transition">📱 SMS</a>
-                  <a href="mailto:?subject=Check out this sports meme&body=${encodedText}" class="flex items-center gap-2 px-3.5 py-2 hover:bg-slate-800 text-slate-300 hover:text-white transition">📧 Email</a>
-                  <a href="https://www.tiktok.com/" target="_blank" onclick="copyLink('${post.media_url}')" class="flex items-center gap-2 px-3.5 py-2 hover:bg-slate-800 text-slate-300 hover:text-white transition" title="Copies link for TikTok">🎵 TikTok (Copy Link)</a>
+                  <a href="https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}" target="_blank" class="flex items-center gap-2 px-3.5 py-2 hover:bg-slate-800 text-slate-300">📘 Facebook</a>
+                  <a href="https://twitter.com/intent/tweet?text=${encodedText}" target="_blank" class="flex items-center gap-2 px-3.5 py-2 hover:bg-slate-800 text-slate-300">✖️ X (Twitter)</a>
+                  <a href="https://api.whatsapp.com/send?text=${encodedText}" target="_blank" class="flex items-center gap-2 px-3.5 py-2 hover:bg-slate-800 text-slate-300">🟢 WhatsApp</a>
+                  <a href="viber://forward?text=${encodedText}" class="flex items-center gap-2 px-3.5 py-2 hover:bg-slate-800 text-slate-300">🟣 Viber</a>
+                  <button onclick="copyLink('${post.media_url}')" class="w-full text-left flex items-center gap-2 px-3.5 py-2 hover:bg-slate-800 text-slate-300">🔗 Copy Link</button>
                 </div>
               </div>
-
             </div>
           </div>
         `;
@@ -345,18 +269,12 @@
 
     function toggleShareMenu(event, index) {
       event.stopPropagation();
-      // Close all other open menus first
-      document.querySelectorAll('[id^="share-menu-"]').forEach((menu, i) => {
-        if (i !== index) menu.classList.add('hidden');
-      });
-      const menu = document.getElementById(`share-menu-${index}`);
-      menu.classList.toggle('hidden');
+      document.querySelectorAll('[id^="share-menu-"]').forEach((m, i) => { if (i !== index) m.classList.add('hidden'); });
+      document.getElementById(`share-menu-${index}`).classList.toggle('hidden');
     }
 
-    function closeAllShareMenus(event) {
-      document.querySelectorAll('[id^="share-menu-"]').forEach(menu => {
-        menu.classList.add('hidden');
-      });
+    function closeAllShareMenus() {
+      document.querySelectorAll('[id^="share-menu-"]').forEach(m => m.classList.add('hidden'));
     }
 
     function openModal(url, title, type) {
@@ -369,42 +287,13 @@
       modal.style.display = 'flex';
     }
 
-    function closeModal() {
-      document.getElementById('media-modal').style.display = 'none';
-      document.getElementById('modal-content').innerHTML = '';
-    }
-
+    function closeModal() { document.getElementById('media-modal').style.display = 'none'; }
     function copyLink(url) {
       navigator.clipboard.writeText(url).then(() => {
-        const toast = document.getElementById('toast');
-        toast.style.display = 'block';
-        setTimeout(() => toast.style.display = 'none', 2000);
+        const t = document.getElementById('toast');
+        t.style.display = 'block';
+        setTimeout(() => t.style.display = 'none', 2000);
       });
-    }
-
-    function openLegalModal(type) {
-      const modal = document.getElementById('legal-modal');
-      const title = document.getElementById('legal-title');
-      const body = document.getElementById('legal-body');
-
-      if (type === 'privacy') {
-        title.innerText = "Privacy Policy";
-        body.innerHTML = "<p>We prioritize user privacy. No personal identification data or cookies are stored on third-party servers.</p>";
-      } else if (type === 'terms') {
-        title.innerText = "Terms of Service";
-        body.innerHTML = "<p>All media uploaded or shared must comply with international copyright laws.</p>";
-      } else if (type === 'dmca') {
-        title.innerText = "DMCA & Copyright Policy";
-        body.innerHTML = "<p>If you believe your copyrighted content is hosted without authorization, contact the administrator for immediate removal.</p>";
-      } else if (type === 'cookies') {
-        title.innerText = "Cookie Settings";
-        body.innerHTML = "<p>Only essential browser memory tokens are used to remember filter choices.</p>";
-      }
-      modal.style.display = 'flex';
-    }
-
-    function closeLegalModal() {
-      document.getElementById('legal-modal').style.display = 'none';
     }
 
     fetchMemes();
