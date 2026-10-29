@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Panel - Sports Memes Hub</title>
+  <title>Admin Panel - Direct File Upload</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-zinc-950 text-white min-h-screen flex flex-col items-center justify-center p-4">
@@ -11,47 +11,34 @@
   <!-- Login Box -->
   <div id="login-box" class="bg-zinc-900 border border-zinc-800 p-8 rounded-xl max-w-md w-full shadow-2xl">
     <h2 class="text-xl font-bold mb-4 text-emerald-400">Admin Authentication</h2>
-    <p class="text-xs text-zinc-400 mb-6">Enter your administrator password to access the upload dashboard.</p>
+    <p class="text-xs text-zinc-400 mb-6">Enter your administrator password to access the file upload dashboard.</p>
     <input type="password" id="admin-pass" placeholder="Password (default: admin123)" class="w-full bg-zinc-950 border border-zinc-800 rounded px-4 py-2.5 text-sm mb-4 focus:outline-none focus:border-emerald-500">
     <button onclick="login()" class="w-full bg-emerald-600 hover:bg-emerald-500 font-semibold py-2.5 rounded text-sm transition">Login</button>
   </div>
 
-  <!-- Dashboard Panel (Hidden until login) -->
+  <!-- Upload Dashboard -->
   <div id="dashboard" class="bg-zinc-900 border border-zinc-800 p-8 rounded-xl max-w-2xl w-full shadow-2xl hidden my-8">
     <div class="flex justify-between items-center mb-6 border-b border-zinc-800 pb-4">
-      <h2 class="text-xl font-bold text-emerald-400">Admin Control Center</h2>
+      <h2 class="text-xl font-bold text-emerald-400">Admin File Upload Panel</h2>
       <a href="index.html" class="text-xs bg-zinc-800 hover:bg-zinc-700 px-3 py-1.5 rounded transition">View Website ➔</a>
     </div>
 
-    <!-- Ad Management Note -->
-    <div class="bg-zinc-950 border border-zinc-800 p-4 rounded-lg mb-6 text-xs text-zinc-400">
-      <p class="font-bold text-zinc-200 mb-1">📢 Advertisement Spaces Active</p>
-      <p>Top banner and in-feed ad slots are pre-configured in `index.html`. You can paste your Google AdSense or affiliate HTML snippet directly into those sections in your code editor whenever you are ready.</p>
-    </div>
-
     <form id="upload-form" onsubmit="uploadMeme(event)" class="space-y-4">
-      <h3 class="text-sm font-bold text-zinc-300 uppercase tracking-wider mb-2">Upload New Meme / Video</h3>
       
+      <!-- Title -->
       <div>
         <label class="block text-xs font-semibold text-zinc-400 mb-1">Meme Title / Caption</label>
         <input type="text" id="title" required placeholder="e.g. Unbelievable last minute goal!" class="w-full bg-zinc-950 border border-zinc-800 rounded px-4 py-2.5 text-sm focus:outline-none focus:border-emerald-500">
       </div>
 
+      <!-- Local File Picker Input -->
       <div>
-        <label class="block text-xs font-semibold text-zinc-400 mb-1">Media URL (Direct Image, GIF, or .mp4 Video link)</label>
-        <input type="url" id="media_url" required placeholder="https://..." class="w-full bg-zinc-950 border border-zinc-800 rounded px-4 py-2.5 text-sm focus:outline-none focus:border-emerald-500">
+        <label class="block text-xs font-semibold text-zinc-400 mb-1">Select Media File (Image, GIF, or .mp4 Video)</label>
+        <input type="file" id="media_file" accept="image/*,video/mp4,image/gif" required class="w-full bg-zinc-950 border border-zinc-800 rounded px-3 py-2 text-sm text-zinc-300 file:mr-4 file:py-1.5 file:px-3 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-emerald-600 file:text-white hover:file:bg-emerald-500 cursor-pointer">
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div>
-          <label class="block text-xs font-semibold text-zinc-400 mb-1">Media Format</label>
-          <select id="type" class="w-full bg-zinc-950 border border-zinc-800 rounded px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500">
-            <option value="image">Picture 🖼️</option>
-            <option value="gif">GIF 🎞️</option>
-            <option value="video">Video 🎬</option>
-          </select>
-        </div>
-
+      <!-- Categories & Options -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
         <div>
           <label class="block text-xs font-semibold text-zinc-400 mb-1">Sport</label>
           <select id="sport" onchange="updateCompetitions()" class="w-full bg-zinc-950 border border-zinc-800 rounded px-3 py-2.5 text-sm focus:outline-none focus:border-emerald-500">
@@ -68,12 +55,12 @@
         </div>
       </div>
 
-      <button type="submit" id="submit-btn" class="w-full bg-emerald-600 hover:bg-emerald-500 font-semibold py-3 rounded text-sm transition mt-6">Publish Meme to Database 🚀</button>
+      <button type="submit" id="submit-btn" class="w-full bg-emerald-600 hover:bg-emerald-500 font-semibold py-3 rounded text-sm transition mt-6">Upload & Publish Meme 🚀</button>
       <p id="status-msg" class="text-center text-xs mt-3 font-medium"></p>
     </form>
   </div>
 
-  <!-- Supabase Client -->
+  <!-- Supabase JS Client -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     const SUPABASE_URL = 'https://ayfkiofamrnnsmerfcpf.supabase.co';
@@ -87,7 +74,7 @@
 
     function login() {
       const pass = document.getElementById('admin-pass').value;
-      if (pass === 'admin123') { // Change password here if desired
+      if (pass === 'admin123') { // Admin password
         document.getElementById('login-box').style.display = 'none';
         document.getElementById('dashboard').style.display = 'block';
         updateCompetitions();
@@ -106,35 +93,72 @@
       e.preventDefault();
       const btn = document.getElementById('submit-btn');
       const msg = document.getElementById('status-msg');
+      const fileInput = document.getElementById('media_file');
       
-      btn.disabled = true;
-      btn.innerText = 'Publishing...';
-      msg.innerText = '';
-
-      const payload = {
-        title: document.getElementById('title').value,
-        media_url: document.getElementById('media_url').value,
-        type: document.getElementById('type').value,
-        sport: document.getElementById('sport').value,
-        competition: document.getElementById('competition').value,
-        source: 'Admin Upload',
-        created_at: new Date().toISOString()
-      };
-
-      const { error } = await supabaseClient.from('posts').upsert(payload, { onConflict: 'media_url' });
-
-      if (error) {
-        msg.className = 'text-center text-xs mt-3 font-medium text-red-400';
-        msg.innerText = `Error: ${error.message}`;
-      } else {
-        msg.className = 'text-center text-xs mt-3 font-medium text-emerald-400';
-        msg.innerText = 'Success! Meme published to database.';
-        document.getElementById('upload-form').reset();
-        updateCompetitions();
+      if (!fileInput.files || fileInput.files.length === 0) {
+        alert("Please select a file to upload.");
+        return;
       }
 
-      btn.disabled = false;
-      btn.innerText = 'Publish Meme to Database 🚀';
+      const file = fileInput.files[0];
+      btn.disabled = true;
+      btn.innerText = 'Uploading file to server...';
+      msg.innerText = '';
+
+      try {
+        // Auto-detect format type
+        let mediaType = 'image';
+        if (file.type.includes('gif')) {
+          mediaType = 'gif';
+        } else if (file.type.includes('video') || file.name.endsWith('.mp4')) {
+          mediaType = 'video';
+        }
+
+        // Generate unique filename to avoid overwrites
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+        const filePath = `uploads/${fileName}`;
+
+        // 1. Upload File directly to Supabase Storage Bucket ('memes')
+        const { data: storageData, error: storageError } = await supabaseClient.storage
+          .from('memes')
+          .upload(filePath, file, { cacheControl: '3600', upsert: false });
+
+        if (storageError) throw storageError;
+
+        // 2. Get Public Public URL
+        const { data: publicUrlData } = supabaseClient.storage
+          .from('memes')
+          .getPublicUrl(filePath);
+
+        const publicUrl = publicUrlData.publicUrl;
+
+        // 3. Save Record into Posts Table
+        const payload = {
+          title: document.getElementById('title').value,
+          media_url: publicUrl,
+          type: mediaType,
+          sport: document.getElementById('sport').value,
+          competition: document.getElementById('competition').value,
+          source: 'Direct Upload',
+          created_at: new Date().toISOString()
+        };
+
+        const { error: dbError } = await supabaseClient.from('posts').insert([payload]);
+        if (dbError) throw dbError;
+
+        msg.className = 'text-center text-xs mt-3 font-medium text-emerald-400';
+        msg.innerText = 'Success! File uploaded and published to live website.';
+        document.getElementById('upload-form').reset();
+        updateCompetitions();
+
+      } catch (err) {
+        msg.className = 'text-center text-xs mt-3 font-medium text-red-400';
+        msg.innerText = `Upload Error: ${err.message}`;
+      } finally {
+        btn.disabled = false;
+        btn.innerText = 'Upload & Publish Meme 🚀';
+      }
     }
   </script>
 </body>
