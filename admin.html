@@ -107,7 +107,7 @@
       <p id="manage-msg" class="text-center text-xs mt-3 font-bold"></p>
     </div>
 
-    <!-- TAB 3: API VIDEO DOWNLOADER UTILITY -->
+    <!-- TAB 3: API VIDEO DOWNLOADER UTILITY WITH CORS PROXY -->
     <div id="section-downloader" class="hidden space-y-4">
       <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">API Social Video Downloader</h3>
       <p class="text-[11px] text-slate-500 mb-4">Paste any Instagram, TikTok, YouTube, or Facebook video URL. The API will extract the direct raw .mp4 file for you to download locally.</p>
@@ -362,7 +362,7 @@
       }
     }
 
-    // COBALT API INTEGRATION FOR RAW VIDEO EXTRACTION
+    // COBALT API INTEGRATION WITH CORS PROXY BYPASS
     async function processDownloadLink() {
       const link = document.getElementById('source-link').value.trim();
       const msg = document.getElementById('downloader-msg');
@@ -375,11 +375,14 @@
       }
 
       msg.className = "text-center text-xs mt-3 font-bold text-amber-400";
-      msg.innerText = "Extracting raw video stream via Cobalt API... Please wait.";
+      msg.innerText = "Extracting raw video stream... Please wait.";
       resultBox.classList.add('hidden');
 
       try {
-        const response = await fetch('https://api.cobalt.tools/api/json', {
+        const apiUrl = `https://api.cobalt.tools/api/json`;
+        const proxyUrl = `https://corsproxy.io/?` + encodeURIComponent(apiUrl);
+
+        const response = await fetch(proxyUrl, {
           method: 'POST',
           headers: {
             'Accept': 'application/json',
@@ -404,7 +407,7 @@
 
       } catch (err) {
         msg.className = "text-center text-xs mt-3 font-bold text-red-400";
-        msg.innerText = `Extraction Error: ${err.message}`;
+        msg.innerText = `Extraction Error: ${err.message}.`;
       }
     }
   </script>
