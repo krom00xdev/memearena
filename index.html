@@ -22,7 +22,6 @@
     }
   </script>
   <style>
-    /* Custom Scrollbar */
     ::-webkit-scrollbar { width: 8px; height: 8px; }
     ::-webkit-scrollbar-track { background: #0B0F17; }
     ::-webkit-scrollbar-thumb { background: #1F2937; border-radius: 4px; }
@@ -31,23 +30,20 @@
 </head>
 <body class="bg-stadium text-slate-100 min-h-screen flex flex-col font-sans antialiased selection:bg-neon selection:text-black">
 
-  <!-- TOP BANNER AD (ALL DEVICES) -->
+  <!-- TOP BANNER AD -->
   <div class="w-full bg-slate-900/80 border-b border-slate-800 py-2 px-4 text-center">
     <div class="max-w-5xl mx-auto bg-stadium border border-dashed border-slate-700/60 rounded-xl p-2.5 text-xs text-slate-400 flex items-center justify-center gap-2 shadow-inner">
       <span class="bg-amber-500/20 text-amber-400 border border-amber-500/30 text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">ADVERTISEMENT</span>
-      <span class="hidden sm:inline">Top Leaderboard Banner Space (728x90 / Responsive AdSense)</span>
-      <span class="sm:hidden">Mobile Banner Slot (320x50)</span>
+      <span>Top Leaderboard Banner Space (728x90)</span>
     </div>
   </div>
 
-  <!-- HEADER / NAVIGATION -->
+  <!-- HEADER & NAVIGATION -->
   <header class="border-b border-slate-800/80 sticky top-0 bg-stadium/95 backdrop-blur-md z-30 shadow-2xl">
     <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col gap-3">
       
       <!-- Top Row: Logo, Search & Admin -->
       <div class="flex flex-col md:flex-row justify-between items-center gap-3">
-        
-        <!-- Logo -->
         <a href="index.html" class="flex items-center gap-2.5 group">
           <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 via-neon to-amber-400 p-0.5 shadow-lg shadow-neon/20 group-hover:scale-105 transition duration-300">
             <div class="w-full h-full bg-stadium rounded-[10px] flex items-center justify-center text-lg">⚽</div>
@@ -64,7 +60,6 @@
           <svg class="w-4 h-4 text-slate-500 absolute left-3.5 top-2.5 fill-current" viewBox="0 0 24 24"><path d="M10 2a8 8 0 015.29 13.71l4.5 4.5a1 1 0 01-1.42 1.42l-4.5-4.5A8 8 0 1110 2zm0 2a6 6 0 100 12 6 6 0 000-12z"/></svg>
         </div>
 
-        <!-- Meta Actions -->
         <div class="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end">
           <span id="item-count" class="text-xs bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-lg text-slate-400 font-semibold shadow-inner">0 Memes</span>
           <a href="admin.html" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold px-3.5 py-2 rounded-xl border border-slate-700 transition flex items-center gap-1.5 shadow">
@@ -73,26 +68,46 @@
         </div>
       </div>
 
-      <!-- Sport Selector Tabs -->
-      <div class="flex items-center gap-2 pt-2 border-t border-slate-800/80 overflow-x-auto no-scrollbar">
-        <button onclick="selectSport('all')" id="sport-all" class="px-4 py-2 bg-gradient-to-r from-emerald-600 to-neon text-black font-extrabold rounded-xl text-xs uppercase tracking-wider transition shadow-lg shadow-neon/20 whitespace-nowrap">🔥 ALL SPORTS</button>
-        <button onclick="selectSport('football')" id="sport-football" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold rounded-xl text-xs uppercase tracking-wider transition border border-slate-800 whitespace-nowrap flex items-center gap-1.5">⚽ FOOTBALL</button>
-        <button onclick="selectSport('basketball')" id="sport-basketball" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold rounded-xl text-xs uppercase tracking-wider transition border border-slate-800 whitespace-nowrap flex items-center gap-1.5">🏀 BASKETBALL</button>
-      </div>
+      <!-- ADVANCED DROP-DOWN & CHECKBOX FILTER PANEL -->
+      <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 flex flex-col gap-4 shadow-xl">
+        
+        <div class="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between border-b border-slate-800 pb-3">
+          <!-- Sport Dropdown Selector -->
+          <div class="flex items-center gap-3 w-full md:w-auto">
+            <label for="sport-dropdown" class="text-xs font-bold text-amber-400 uppercase tracking-wider whitespace-nowrap">Sport:</label>
+            <select id="sport-dropdown" onchange="onSportChange()" class="w-full md:w-56 bg-stadium border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200 font-bold focus:outline-none focus:border-neon">
+              <option value="all">🔥 All Sports</option>
+              <option value="football">⚽ Football</option>
+              <option value="basketball">🏀 Basketball</option>
+            </select>
+          </div>
 
-      <!-- Dynamic Competition Subfilters -->
-      <div id="subfilter-container" class="flex items-center gap-2 pt-1 hidden overflow-x-auto no-scrollbar">
-        <span class="text-[11px] text-amber-400 font-bold uppercase tracking-wider whitespace-nowrap">LEAGUE:</span>
-        <div id="subfilter-buttons" class="flex items-center gap-1.5"></div>
-      </div>
+          <!-- Reset Filters Button -->
+          <button onclick="resetFilters()" class="text-xs text-slate-400 hover:text-white font-semibold underline transition">Reset All Filters</button>
+        </div>
 
-      <!-- Format Filter Pills -->
-      <div class="flex items-center gap-2 pt-1 border-t border-slate-800/50 text-xs overflow-x-auto no-scrollbar">
-        <span class="text-[11px] text-slate-500 font-bold uppercase tracking-wider whitespace-nowrap">FORMAT:</span>
-        <button onclick="selectType('all')" id="type-all" class="px-3 py-1 bg-slate-800 text-slate-200 rounded-lg font-bold text-[11px] transition whitespace-nowrap">ALL</button>
-        <button onclick="selectType('image')" id="type-image" class="px-3 py-1 bg-slate-900/80 hover:bg-slate-800 text-slate-400 rounded-lg font-bold text-[11px] transition border border-slate-800/80 whitespace-nowrap">PICTURES 🖼️</button>
-        <button onclick="selectType('gif')" id="type-gif" class="px-3 py-1 bg-slate-900/80 hover:bg-slate-800 text-slate-400 rounded-lg font-bold text-[11px] transition border border-slate-800/80 whitespace-nowrap">GIFS 🎞️</button>
-        <button onclick="selectType('video')" id="type-video" class="px-3 py-1 bg-slate-900/80 hover:bg-slate-800 text-slate-400 rounded-lg font-bold text-[11px] transition border border-slate-800/80 whitespace-nowrap">VIDEOS 🎬</button>
+        <!-- Dynamic League Checkboxes (Ticked/Marked Options) -->
+        <div id="league-checkboxes-container" class="hidden flex flex-col gap-2">
+          <span class="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider">Select Leagues / Competitions (Tick to filter):</span>
+          <div id="league-checkboxes-list" class="flex flex-wrap gap-2.5"></div>
+        </div>
+
+        <!-- Format Checkboxes (Pictures, GIFs, Videos) -->
+        <div class="flex flex-col gap-2 pt-2 border-t border-slate-800/60">
+          <span class="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider">Media Format (Tick to filter):</span>
+          <div class="flex flex-wrap gap-3">
+            <label class="flex items-center gap-2 bg-stadium border border-slate-800 px-3 py-1.5 rounded-xl cursor-pointer hover:border-slate-700 transition text-xs font-semibold">
+              <input type="checkbox" name="format-filter" value="image" onchange="renderFeed()" class="accent-neon rounded"> Picture 🖼️
+            </label>
+            <label class="flex items-center gap-2 bg-stadium border border-slate-800 px-3 py-1.5 rounded-xl cursor-pointer hover:border-slate-700 transition text-xs font-semibold">
+              <input type="checkbox" name="format-filter" value="gif" onchange="renderFeed()" class="accent-neon rounded"> GIF 🎞️
+            </label>
+            <label class="flex items-center gap-2 bg-stadium border border-slate-800 px-3 py-1.5 rounded-xl cursor-pointer hover:border-slate-700 transition text-xs font-semibold">
+              <input type="checkbox" name="format-filter" value="video" onchange="renderFeed()" class="accent-neon rounded"> Video 🎬
+            </label>
+          </div>
+        </div>
+
       </div>
 
     </div>
@@ -101,7 +116,7 @@
   <!-- MAIN WRAPPER WITH PC SIDE ADS -->
   <div class="max-w-[1500px] mx-auto w-full flex-grow flex gap-4 p-4">
     
-    <!-- LEFT SIDEBAR AD (DESKTOP / PC ONLY) -->
+    <!-- LEFT SIDEBAR AD -->
     <aside class="hidden xl:block w-[160px] flex-shrink-0">
       <div class="sticky top-44 bg-slate-900/60 border border-dashed border-slate-800 rounded-2xl p-3 text-center min-h-[600px] flex flex-col items-center justify-center gap-2 text-slate-500 shadow-xl">
         <span class="bg-amber-500/20 text-amber-400 text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">ADVERT</span>
@@ -109,7 +124,7 @@
       </div>
     </aside>
 
-    <!-- CENTER FEED GRID AREA -->
+    <!-- CENTER FEED GRID -->
     <main class="flex-grow w-full max-w-6xl mx-auto flex flex-col">
       <div id="loading" class="text-center py-24 text-slate-400 font-bold animate-pulse flex flex-col items-center gap-3">
         <div class="w-10 h-10 border-4 border-neon border-t-transparent rounded-full animate-spin"></div>
@@ -118,14 +133,14 @@
       
       <div id="feed-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
       
-      <!-- IN-FEED AD BREAK SLOT -->
+      <!-- IN-FEED AD BREAK -->
       <div class="my-8 w-full bg-slate-900/90 border border-dashed border-slate-800 rounded-2xl p-6 text-center text-xs text-slate-500 flex flex-col items-center justify-center gap-2 shadow-lg">
         <span class="bg-amber-500/20 text-amber-400 text-[10px] px-2.5 py-0.5 rounded-full font-extrabold uppercase tracking-widest">SPONSORED FEED AD</span>
         <span>In-Feed Native Advertisement / Banner Slot</span>
       </div>
     </main>
 
-    <!-- RIGHT SIDEBAR AD (DESKTOP / PC ONLY) -->
+    <!-- RIGHT SIDEBAR AD -->
     <aside class="hidden xl:block w-[160px] flex-shrink-0">
       <div class="sticky top-44 bg-slate-900/60 border border-dashed border-slate-800 rounded-2xl p-3 text-center min-h-[600px] flex flex-col items-center justify-center gap-2 text-slate-500 shadow-xl">
         <span class="bg-amber-500/20 text-amber-400 text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">ADVERT</span>
@@ -135,7 +150,7 @@
 
   </div>
 
-  <!-- FIXED BOTTOM MOBILE / DESKTOP STICKY BANNER AD -->
+  <!-- FIXED BOTTOM STICKY BANNER -->
   <div class="sticky bottom-0 z-40 bg-stadium/95 backdrop-blur-md border-t border-slate-800 p-2 text-center shadow-2xl">
     <div class="max-w-4xl mx-auto bg-slate-900 border border-dashed border-slate-700/60 rounded-xl p-2 text-xs text-slate-400 flex items-center justify-between px-4">
       <div class="flex items-center gap-2">
@@ -146,11 +161,9 @@
     </div>
   </div>
 
-  <!-- LEGAL & PRIVACY FOOTER -->
+  <!-- LEGAL FOOTER -->
   <footer class="bg-slate-950 border-t border-slate-800/80 mt-12 py-10 px-4 text-xs text-slate-400">
     <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
-      
-      <!-- Brand & Mission -->
       <div class="space-y-3">
         <div class="flex items-center gap-2">
           <span class="text-lg">⚽</span>
@@ -158,18 +171,14 @@
         </div>
         <p class="text-slate-500 leading-relaxed text-[11px]">The ultimate daily hub for football, basketball, and viral sports memes, reactions, clips, and highlights.</p>
       </div>
-
-      <!-- Quick Links -->
       <div class="space-y-2">
         <h4 class="font-bold text-slate-200 text-[11px] uppercase tracking-wider">Competitions</h4>
         <ul class="space-y-1 text-slate-500">
-          <li><a href="#" onclick="selectSport('football'); return false;" class="hover:text-neon transition">UEFA Champions League</a></li>
-          <li><a href="#" onclick="selectSport('basketball'); return false;" class="hover:text-neon transition">NBA & EuroLeague</a></li>
-          <li><a href="#" onclick="selectSport('football'); return false;" class="hover:text-neon transition">European Football Leagues</a></li>
+          <li><a href="#" class="hover:text-neon transition">UEFA Champions League</a></li>
+          <li><a href="#" class="hover:text-neon transition">NBA & EuroLeague</a></li>
+          <li><a href="#" class="hover:text-neon transition">European Football Leagues</a></li>
         </ul>
       </div>
-
-      <!-- Legal / Privacy -->
       <div class="space-y-2">
         <h4 class="font-bold text-slate-200 text-[11px] uppercase tracking-wider">Legal Information</h4>
         <ul class="space-y-1 text-slate-500">
@@ -179,22 +188,18 @@
           <li><a href="#" onclick="openLegalModal('cookies'); return false;" class="hover:text-neon transition">Cookie Preferences</a></li>
         </ul>
       </div>
-
-      <!-- Disclaimer -->
       <div class="space-y-2">
         <h4 class="font-bold text-slate-200 text-[11px] uppercase tracking-wider">Content Disclaimer</h4>
-        <p class="text-[10px] text-slate-500 leading-relaxed">All media content uploaded or embedded belongs to their respective rights holders. This platform acts as a community media aggregator under fair use guidelines.</p>
+        <p class="text-[10px] text-slate-500 leading-relaxed">All media content uploaded or embedded belongs to their respective rights holders under fair use guidelines.</p>
       </div>
-
     </div>
-
     <div class="max-w-6xl mx-auto pt-8 mt-8 border-t border-slate-900 flex flex-col sm:flex-row justify-between items-center gap-4 text-[11px] text-slate-600">
       <span>&copy; 2026 SPORTBANTER. All Rights Reserved. Hosted on Hostinger.</span>
       <span>Designed for Sports Fans Worldwide 🏆</span>
     </div>
   </footer>
 
-  <!-- FULLSCREEN PREVIEW MODAL -->
+  <!-- FULLSCREEN MODAL -->
   <div id="media-modal" class="fixed inset-0 bg-black/95 z-50 hidden flex-col items-center justify-center p-4 backdrop-blur-md">
     <button onclick="closeModal()" class="absolute top-6 right-6 text-slate-400 hover:text-white text-3xl font-bold bg-slate-900/90 px-3.5 py-1 rounded-full border border-slate-700">&times;</button>
     <div class="max-w-4xl max-h-[80vh] w-full flex items-center justify-center overflow-hidden rounded-2xl bg-stadiumCard border border-slate-800 shadow-2xl">
@@ -203,7 +208,7 @@
     <p id="modal-title" class="text-slate-200 mt-4 text-center font-bold max-w-xl text-base px-4"></p>
   </div>
 
-  <!-- LEGAL INFORMATION MODAL -->
+  <!-- LEGAL MODAL -->
   <div id="legal-modal" class="fixed inset-0 bg-black/90 z-50 hidden flex-col items-center justify-center p-4">
     <div class="max-w-2xl w-full bg-slate-900 border border-slate-800 rounded-2xl p-6 relative max-h-[80vh] overflow-y-auto">
       <button onclick="closeLegalModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-2xl font-bold">&times;</button>
@@ -212,7 +217,7 @@
     </div>
   </div>
 
-  <!-- TOAST NOTIFICATION -->
+  <!-- TOAST -->
   <div id="toast" class="fixed bottom-16 right-6 bg-gradient-to-r from-emerald-600 to-neon text-black font-extrabold px-4 py-2.5 rounded-xl shadow-2xl hidden z-50 text-xs transition">Link copied to clipboard! 🚀</div>
 
   <!-- SUPABASE JS CLIENT -->
@@ -222,16 +227,13 @@
     const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_67CCvUlVyJCJukihrXheHg_CNCiP5VM';
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
-    const subfilters = {
+    const leagues = {
       football: ['Champions League', 'Europa League', 'Conference League', 'National Teams', 'Premier League', 'La Liga', 'Serie A', 'Bundesliga', 'Ligue 1', 'Eredivisie', 'Primeira Liga', 'Belgian Pro League', 'Greek Super League'],
       basketball: ['NBA', 'EuroLeague', 'National Teams']
     };
 
-    let activeSport = 'all';
-    let activeSub = 'all';
-    let activeType = 'all';
-    let searchQuery = '';
     let allPosts = [];
+    let searchQuery = '';
 
     async function fetchMemes() {
       const { data, error } = await supabaseClient.from('posts').select('*').order('created_at', { ascending: false });
@@ -250,74 +252,63 @@
       renderFeed();
     }
 
-    function selectSport(sport) {
-      activeSport = sport;
-      activeSub = 'all';
+    function onSportChange() {
+      const sport = document.getElementById('sport-dropdown').value;
+      const container = document.getElementById('league-checkboxes-container');
+      const list = document.getElementById('league-checkboxes-list');
 
-      ['all', 'football', 'basketball'].forEach(s => {
-        const btn = document.getElementById(`sport-${s}`);
-        if (s === sport) {
-          btn.className = "px-4 py-2 bg-gradient-to-r from-emerald-600 to-neon text-black font-extrabold rounded-xl text-xs uppercase tracking-wider transition shadow-lg shadow-neon/20 whitespace-nowrap";
-        } else {
-          btn.className = "px-4 py-2 bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold rounded-xl text-xs uppercase tracking-wider transition border border-slate-800 whitespace-nowrap";
-        }
-      });
-
-      const subContainer = document.getElementById('subfilter-container');
-      const subButtons = document.getElementById('subfilter-buttons');
-      
       if (sport === 'all') {
-        subContainer.classList.add('hidden');
+        container.classList.add('hidden');
+        list.innerHTML = '';
       } else {
-        subContainer.classList.remove('hidden');
-        let html = `<button onclick="selectSub('all')" id="sub-all" class="px-3 py-1 bg-gradient-to-r from-emerald-600 to-neon text-black font-extrabold rounded-lg text-[11px] uppercase transition shadow-md whitespace-nowrap">ALL ${sport === 'football' ? 'FOOTBALL' : 'BASKETBALL'}</button>`;
-        subfilters[sport].forEach(sub => {
-          html += `<button onclick="selectSub('${sub}')" id="sub-${sub}" class="px-3 py-1 bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold rounded-lg text-[11px] transition border border-slate-800 whitespace-nowrap">${sub}</button>`;
-        });
-        subButtons.innerHTML = html;
-      }
-
-      renderFeed();
-    }
-
-    function selectSub(sub) {
-      activeSub = sub;
-      if (activeSport !== 'all') {
-        const list = ['all', ...subfilters[activeSport]];
-        list.forEach(s => {
-          const btn = document.getElementById(`sub-${s}`);
-          if (btn) {
-            btn.className = s === sub ? "px-3 py-1 bg-gradient-to-r from-emerald-600 to-neon text-black font-extrabold rounded-lg text-[11px] uppercase transition shadow-md whitespace-nowrap" : "px-3 py-1 bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold rounded-lg text-[11px] transition border border-slate-800 whitespace-nowrap";
-          }
-        });
+        container.classList.remove('hidden');
+        list.innerHTML = leagues[sport].map(l => `
+          <label class="flex items-center gap-2 bg-stadium border border-slate-800 px-3 py-1.5 rounded-xl cursor-pointer hover:border-slate-700 transition text-xs font-semibold text-slate-300">
+            <input type="checkbox" name="league-filter" value="${l}" onchange="renderFeed()" class="accent-neon rounded" checked> ${l}
+          </label>
+        `).join('');
       }
       renderFeed();
     }
 
-    function selectType(type) {
-      activeType = type;
-      ['all', 'image', 'gif', 'video'].forEach(t => {
-        const btn = document.getElementById(`type-${t}`);
-        btn.className = t === type ? "px-3 py-1 bg-slate-200 text-black font-extrabold rounded-lg text-[11px] transition whitespace-nowrap shadow" : "px-3 py-1 bg-slate-900/80 hover:bg-slate-800 text-slate-400 rounded-lg font-bold text-[11px] transition border border-slate-800/80 whitespace-nowrap";
-      });
+    function resetFilters() {
+      document.getElementById('sport-dropdown').value = 'all';
+      onSportChange();
+      document.querySelectorAll('input[name="format-filter"]').forEach(cb => cb.checked = false);
+      document.getElementById('search-input').value = '';
+      searchQuery = '';
       renderFeed();
     }
 
     function renderFeed() {
       const grid = document.getElementById('feed-grid');
+      const selectedSport = document.getElementById('sport-dropdown').value;
       
+      // Get ticked leagues
+      const tickedLeagues = Array.from(document.querySelectorAll('input[name="league-filter"]:checked')).map(cb => cb.value);
+      
+      // Get ticked formats
+      const tickedFormats = Array.from(document.querySelectorAll('input[name="format-filter"]:checked')).map(cb => cb.value);
+
       const filtered = allPosts.filter(post => {
-        if (activeSport !== 'all' && post.sport !== activeSport) return false;
-        if (activeSub !== 'all' && post.competition !== activeSub) return false;
-        if (activeType !== 'all' && post.type !== activeType) return false;
+        if (selectedSport !== 'all' && post.sport !== selectedSport) return false;
+        
+        // If specific leagues are rendered, ensure post's competition matches a ticked one
+        if (selectedSport !== 'all' && tickedLeagues.length > 0 && !tickedLeagues.includes(post.competition)) return false;
+
+        // Format filter
+        if (tickedFormats.length > 0 && !tickedFormats.includes(post.type)) return false;
+
+        // Search query
         if (searchQuery && !post.title?.toLowerCase().includes(searchQuery) && !post.competition?.toLowerCase().includes(searchQuery)) return false;
+
         return true;
       });
 
       document.getElementById('item-count').innerText = `${filtered.length} Memes`;
 
       if (filtered.length === 0) {
-        grid.innerHTML = '<div class="col-span-full text-center py-24 text-slate-500 font-bold">NO MEMES FOUND MATCHING THIS FILTER.</div>';
+        grid.innerHTML = '<div class="col-span-full text-center py-24 text-slate-500 font-bold">NO MEMES FOUND MATCHING THESE CRITERIA.</div>';
         return;
       }
 
@@ -332,7 +323,6 @@
 
         return `
           <div class="group bg-stadiumCard rounded-2xl overflow-hidden border border-slate-800/80 flex flex-col shadow-xl hover:border-slate-700 transition duration-300">
-            <!-- Media Preview Header -->
             <div onclick="openModal('${post.media_url}', '${safeTitle}', '${post.type}')" class="h-64 bg-black flex items-center justify-center overflow-hidden relative cursor-pointer">
               ${mediaHtml}
               <div class="absolute top-3 right-3 flex gap-1.5">
@@ -347,12 +337,10 @@
               </div>
             </div>
 
-            <!-- Card Body -->
             <div class="p-4 flex flex-col flex-grow justify-between gap-3">
               <h3 onclick="openModal('${post.media_url}', '${safeTitle}', '${post.type}')" class="text-sm font-bold text-slate-100 line-clamp-2 cursor-pointer hover:text-neon transition leading-snug">${post.title}</h3>
               
               <div class="flex flex-col gap-2.5 pt-2 border-t border-slate-800/80 text-xs">
-                <!-- Forward Social Options -->
                 <div class="flex items-center justify-between">
                   <span class="text-[10px] uppercase font-black tracking-widest text-slate-500">FORWARD TO:</span>
                   <div class="flex items-center gap-1.5">
@@ -399,16 +387,16 @@
 
       if (type === 'privacy') {
         title.innerText = "Privacy Policy";
-        body.innerHTML = "<p>We prioritize user privacy. No personal identification data or cookies are stored on third-party servers. Analytics data processed via privacy-friendly standard metrics.</p>";
+        body.innerHTML = "<p>We prioritize user privacy. No personal identification data or cookies are stored on third-party servers.</p>";
       } else if (type === 'terms') {
         title.innerText = "Terms of Service";
-        body.innerHTML = "<p>All media uploaded or shared must comply with international copyright laws. Users agree not to upload explicit or harmful materials.</p>";
+        body.innerHTML = "<p>All media uploaded or shared must comply with international copyright laws.</p>";
       } else if (type === 'dmca') {
         title.innerText = "DMCA & Copyright Policy";
-        body.innerHTML = "<p>If you believe your copyrighted content is hosted without authorization, please contact the administrator via the admin panel for immediate removal.</p>";
+        body.innerHTML = "<p>If you believe your copyrighted content is hosted without authorization, contact the administrator for immediate removal.</p>";
       } else if (type === 'cookies') {
         title.innerText = "Cookie Settings";
-        body.innerHTML = "<p>Only essential browser memory tokens are used to remember filter choices and admin authentication state.</p>";
+        body.innerHTML = "<p>Only essential browser memory tokens are used to remember filter choices.</p>";
       }
       modal.style.display = 'flex';
     }
