@@ -51,22 +51,28 @@
       <h2 class="text-lg font-black text-neon uppercase tracking-wider">Admin Control Center</h2>
       <div class="flex flex-wrap gap-2">
         <button onclick="switchTab('upload')" id="tab-upload" class="text-xs bg-neon text-black font-extrabold px-3.5 py-2 rounded-xl transition shadow">Upload File</button>
-        <button onclick="switchTab('extractor')" id="tab-extractor" class="text-xs bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold px-3.5 py-2 rounded-xl transition border border-slate-800">Video Extractor 🎬</button>
         <button onclick="switchTab('settings')" id="tab-settings" class="text-xs bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold px-3.5 py-2 rounded-xl transition border border-slate-800">Settings ⚙️</button>
         <a href="index.html" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold px-3.5 py-2 rounded-xl transition border border-slate-700">View Site ➔</a>
       </div>
     </div>
 
-    <!-- TAB 1: DIRECT FILE UPLOAD -->
+    <!-- TAB 1: DIRECT FILE UPLOAD & SEO TAGS -->
     <div id="section-upload">
       <form id="upload-form" onsubmit="uploadMeme(event)" class="space-y-4">
         <div>
           <label class="block text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">Meme Title / Caption</label>
-          <input type="text" id="title" required placeholder="e.g. Unbelievable last minute bicycle kick goal!" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-neon transition">
+          <input type="text" id="title" required placeholder="e.g. Unbelievable last minute goal!" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-neon transition">
+        </div>
+
+        <!-- SEO Tags & Hashtags Field -->
+        <div>
+          <label class="block text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">SEO Tags & Hashtags</label>
+          <input type="text" id="seo_tags" placeholder="e.g. #championsleague #football #viralgoals #realmadrid" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-neon transition">
+          <span class="text-[10px] text-slate-500 mt-1 block">Separate keywords and hashtags with spaces for optimal search engine indexing.</span>
         </div>
 
         <div>
-          <label class="block text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">Select Media File (Image, GIF, or .mp4 Video)</label>
+          <label class="block text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">Select Local Media File (Picture, GIF, or .mp4 Video)</label>
           <input type="file" id="media_file" accept="image/*,video/mp4,image/gif" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-300 file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-extrabold file:bg-neon file:text-black hover:file:bg-emerald-400 cursor-pointer">
         </div>
 
@@ -92,25 +98,7 @@
       </form>
     </div>
 
-    <!-- TAB 2: SOCIAL VIDEO EXTRACTOR TOOL -->
-    <div id="section-extractor" class="hidden space-y-4">
-      <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Social Video Extractor Tool</h3>
-      <p class="text-[11px] text-slate-500 mb-4">Paste any Facebook, Instagram, TikTok, or YouTube link to extract and import it directly into your database.</p>
-
-      <div class="flex gap-2">
-        <input type="url" id="social-link" placeholder="Paste social media URL here..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-neon">
-        <button onclick="extractVideo()" class="bg-neon text-black font-extrabold px-4 py-2.5 rounded-xl text-xs transition whitespace-nowrap">Extract 🔍</button>
-      </div>
-
-      <div id="extractor-result" class="hidden mt-4 bg-slate-950 border border-slate-800 rounded-2xl p-4 flex flex-col gap-3">
-        <div id="preview-container" class="w-full h-48 bg-black rounded-xl overflow-hidden flex items-center justify-center"></div>
-        <input type="text" id="extracted-title" placeholder="Meme Title / Caption" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200">
-        <button onclick="publishExtractedVideo()" class="w-full bg-neon text-black font-extrabold py-2.5 rounded-xl text-xs uppercase tracking-wider transition">Save & Publish to Website 🚀</button>
-      </div>
-      <p id="extractor-msg" class="text-center text-xs mt-3 font-bold"></p>
-    </div>
-
-    <!-- TAB 3: ACCOUNT SETTINGS -->
+    <!-- TAB 2: ACCOUNT SETTINGS -->
     <div id="section-settings" class="hidden space-y-4">
       <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Change Admin Credentials</h3>
       
@@ -164,7 +152,7 @@
     }
 
     function switchTab(tab) {
-      ['upload', 'extractor', 'settings'].forEach(t => {
+      ['upload', 'settings'].forEach(t => {
         const sec = document.getElementById(`section-${t}`);
         const btn = document.getElementById(`tab-${t}`);
         if (t === tab) {
@@ -219,7 +207,7 @@
 
       const file = fileInput.files[0];
       btn.disabled = true;
-      btn.innerText = 'Uploading file to server...';
+      btn.innerText = 'Uploading file to storage...';
       msg.innerText = '';
 
       try {
@@ -244,13 +232,19 @@
           .from('memes')
           .getPublicUrl(filePath);
 
+        const titleText = document.getElementById('title').value;
+        const seoTags = document.getElementById('seo_tags').value;
+        
+        // Combines title and SEO tags cleanly for full search engine optimization indexing
+        const fullTitleWithTags = seoTags ? `${titleText} — ${seoTags}` : titleText;
+
         const payload = {
-          title: document.getElementById('title').value,
+          title: fullTitleWithTags,
           media_url: publicUrlData.publicUrl,
           type: mediaType,
           sport: document.getElementById('sport').value,
           competition: document.getElementById('competition').value,
-          source: 'Direct Upload',
+          source: 'Local Upload',
           created_at: new Date().toISOString()
         };
 
@@ -258,7 +252,7 @@
         if (dbError) throw dbError;
 
         msg.className = 'text-center text-xs mt-3 font-bold text-neon';
-        msg.innerText = 'Success! File uploaded and published.';
+        msg.innerText = 'Success! File uploaded and published with SEO tags.';
         document.getElementById('upload-form').reset();
         updateCompetitions();
 
@@ -268,63 +262,6 @@
       } finally {
         btn.disabled = false;
         btn.innerText = 'Upload & Publish Meme 🚀';
-      }
-    }
-
-    let resolvedDirectUrl = '';
-
-    async function extractVideo() {
-      const url = document.getElementById('social-link').value.trim();
-      const msg = document.getElementById('extractor-msg');
-      const resultBox = document.getElementById('extractor-result');
-      
-      if(!url) {
-        alert("Please paste a valid link.");
-        return;
-      }
-
-      msg.innerText = "Extracting media stream... Please wait.";
-      resultBox.classList.add('hidden');
-
-      try {
-        // Sample test stream mapping (Connect to your custom extractor API if necessary)
-        resolvedDirectUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"; 
-        
-        document.getElementById('preview-container').innerHTML = `<video src="${resolvedDirectUrl}" class="h-full w-auto" controls autoplay muted></video>`;
-        document.getElementById('extracted-title').value = "Imported Viral Social Video Clip";
-        
-        resultBox.classList.remove('hidden');
-        msg.innerText = "Extraction successful! Review and publish below.";
-      } catch(err) {
-        msg.innerText = `Extraction failed: ${err.message}`;
-      }
-    }
-
-    async function publishExtractedVideo() {
-      const title = document.getElementById('extracted-title').value;
-      const msg = document.getElementById('extractor-msg');
-
-      if(!resolvedDirectUrl) return;
-
-      const payload = {
-        title: title || 'Social Media Video Clip',
-        media_url: resolvedDirectUrl,
-        type: 'video',
-        sport: 'football',
-        competition: 'Champions League',
-        source: 'Social Extractor',
-        created_at: new Date().toISOString()
-      };
-
-      const { error } = await supabaseClient.from('posts').insert([payload]);
-      if(error) {
-        msg.className = 'text-center text-xs mt-3 font-bold text-red-400';
-        msg.innerText = `Publish error: ${error.message}`;
-      } else {
-        msg.className = 'text-center text-xs mt-3 font-bold text-neon';
-        msg.innerText = "Successfully published to your live platform!";
-        document.getElementById('extractor-result').classList.add('hidden');
-        document.getElementById('social-link').value = '';
       }
     }
   </script>
