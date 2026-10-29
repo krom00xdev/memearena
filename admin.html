@@ -107,10 +107,10 @@
       <p id="manage-msg" class="text-center text-xs mt-3 font-bold"></p>
     </div>
 
-    <!-- TAB 3: API VIDEO DOWNLOADER UTILITY WITH CORS PROXY -->
+    <!-- TAB 3: API VIDEO DOWNLOADER UTILITY WITH COMMUNITY INSTANCE -->
     <div id="section-downloader" class="hidden space-y-4">
       <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">API Social Video Downloader</h3>
-      <p class="text-[11px] text-slate-500 mb-4">Paste any Instagram, TikTok, YouTube, or Facebook video URL. The API will extract the direct raw .mp4 file for you to download locally.</p>
+      <p class="text-[11px] text-slate-500 mb-4">Paste any Instagram, TikTok, YouTube, or Facebook video URL. The community instance API will extract the direct raw .mp4 file.</p>
 
       <div class="flex gap-2">
         <input type="url" id="source-link" placeholder="Paste link (Instagram, TikTok, YouTube, Facebook)..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-neon">
@@ -362,7 +362,7 @@
       }
     }
 
-    // COBALT API INTEGRATION WITH CORS PROXY BYPASS
+    // COBALT COMMUNITY INSTANCE API INTEGRATION
     async function processDownloadLink() {
       const link = document.getElementById('source-link').value.trim();
       const msg = document.getElementById('downloader-msg');
@@ -375,14 +375,14 @@
       }
 
       msg.className = "text-center text-xs mt-3 font-bold text-amber-400";
-      msg.innerText = "Extracting raw video stream... Please wait.";
+      msg.innerText = "Extracting video stream via community instance... Please wait.";
       resultBox.classList.add('hidden');
 
       try {
-        const apiUrl = `https://api.cobalt.tools/api/json`;
-        const proxyUrl = `https://corsproxy.io/?` + encodeURIComponent(apiUrl);
+        // Target an active public community instance endpoint
+        const communityInstanceUrl = `https://co.wuk.sh/api/json`;
 
-        const response = await fetch(proxyUrl, {
+        const response = await fetch(communityInstanceUrl, {
           method: 'POST',
           headers: {
             'Accept': 'application/json',
@@ -402,7 +402,7 @@
           msg.className = "text-center text-xs mt-3 font-bold text-neon";
           msg.innerText = "Success! Direct .mp4 video link generated. Click below to download.";
         } else {
-          throw new Error(data.text || "Could not resolve raw video stream. Please check link validity.");
+          throw new Error(data.text || "Could not resolve video stream. Please check link validity.");
         }
 
       } catch (err) {
