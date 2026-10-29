@@ -28,7 +28,7 @@
     ::-webkit-scrollbar-thumb:hover { background: #10B981; }
   </style>
 </head>
-<body class="bg-stadium text-slate-100 min-h-screen flex flex-col font-sans antialiased selection:bg-neon selection:text-black">
+<body class="bg-stadium text-slate-100 min-h-screen flex flex-col font-sans antialiased selection:bg-neon selection:text-black" onclick="closeAllShareMenus(event)">
 
   <!-- TOP BANNER AD -->
   <div class="w-full bg-slate-900/80 border-b border-slate-800 py-2 px-4 text-center">
@@ -68,11 +68,9 @@
         </div>
       </div>
 
-      <!-- ADVANCED DROP-DOWN & CHECKBOX FILTER PANEL -->
+      <!-- FILTER PANEL -->
       <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 flex flex-col gap-4 shadow-xl">
-        
         <div class="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between border-b border-slate-800 pb-3">
-          <!-- Sport Dropdown Selector -->
           <div class="flex items-center gap-3 w-full md:w-auto">
             <label for="sport-dropdown" class="text-xs font-bold text-amber-400 uppercase tracking-wider whitespace-nowrap">Sport:</label>
             <select id="sport-dropdown" onchange="onSportChange()" class="w-full md:w-56 bg-stadium border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200 font-bold focus:outline-none focus:border-neon">
@@ -81,18 +79,14 @@
               <option value="basketball">🏀 Basketball</option>
             </select>
           </div>
-
-          <!-- Reset Filters Button -->
           <button onclick="resetFilters()" class="text-xs text-slate-400 hover:text-white font-semibold underline transition">Reset All Filters</button>
         </div>
 
-        <!-- Dynamic League Checkboxes (Ticked/Marked Options) -->
         <div id="league-checkboxes-container" class="hidden flex flex-col gap-2">
           <span class="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider">Select Leagues / Competitions (Tick to filter):</span>
           <div id="league-checkboxes-list" class="flex flex-wrap gap-2.5"></div>
         </div>
 
-        <!-- Format Checkboxes (Pictures, GIFs, Videos) -->
         <div class="flex flex-col gap-2 pt-2 border-t border-slate-800/60">
           <span class="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider">Media Format (Tick to filter):</span>
           <div class="flex flex-wrap gap-3">
@@ -107,7 +101,6 @@
             </label>
           </div>
         </div>
-
       </div>
 
     </div>
@@ -115,8 +108,6 @@
 
   <!-- MAIN WRAPPER WITH PC SIDE ADS -->
   <div class="max-w-[1500px] mx-auto w-full flex-grow flex gap-4 p-4">
-    
-    <!-- LEFT SIDEBAR AD -->
     <aside class="hidden xl:block w-[160px] flex-shrink-0">
       <div class="sticky top-44 bg-slate-900/60 border border-dashed border-slate-800 rounded-2xl p-3 text-center min-h-[600px] flex flex-col items-center justify-center gap-2 text-slate-500 shadow-xl">
         <span class="bg-amber-500/20 text-amber-400 text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">ADVERT</span>
@@ -124,7 +115,6 @@
       </div>
     </aside>
 
-    <!-- CENTER FEED GRID -->
     <main class="flex-grow w-full max-w-6xl mx-auto flex flex-col">
       <div id="loading" class="text-center py-24 text-slate-400 font-bold animate-pulse flex flex-col items-center gap-3">
         <div class="w-10 h-10 border-4 border-neon border-t-transparent rounded-full animate-spin"></div>
@@ -133,21 +123,18 @@
       
       <div id="feed-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
       
-      <!-- IN-FEED AD BREAK -->
       <div class="my-8 w-full bg-slate-900/90 border border-dashed border-slate-800 rounded-2xl p-6 text-center text-xs text-slate-500 flex flex-col items-center justify-center gap-2 shadow-lg">
         <span class="bg-amber-500/20 text-amber-400 text-[10px] px-2.5 py-0.5 rounded-full font-extrabold uppercase tracking-widest">SPONSORED FEED AD</span>
         <span>In-Feed Native Advertisement / Banner Slot</span>
       </div>
     </main>
 
-    <!-- RIGHT SIDEBAR AD -->
     <aside class="hidden xl:block w-[160px] flex-shrink-0">
       <div class="sticky top-44 bg-slate-900/60 border border-dashed border-slate-800 rounded-2xl p-3 text-center min-h-[600px] flex flex-col items-center justify-center gap-2 text-slate-500 shadow-xl">
         <span class="bg-amber-500/20 text-amber-400 text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">ADVERT</span>
         <span class="text-xs leading-relaxed font-mono">160x600<br>Skyscraper</span>
       </div>
     </aside>
-
   </div>
 
   <!-- FIXED BOTTOM STICKY BANNER -->
@@ -283,25 +270,14 @@
     function renderFeed() {
       const grid = document.getElementById('feed-grid');
       const selectedSport = document.getElementById('sport-dropdown').value;
-      
-      // Get ticked leagues
       const tickedLeagues = Array.from(document.querySelectorAll('input[name="league-filter"]:checked')).map(cb => cb.value);
-      
-      // Get ticked formats
       const tickedFormats = Array.from(document.querySelectorAll('input[name="format-filter"]:checked')).map(cb => cb.value);
 
       const filtered = allPosts.filter(post => {
         if (selectedSport !== 'all' && post.sport !== selectedSport) return false;
-        
-        // If specific leagues are rendered, ensure post's competition matches a ticked one
         if (selectedSport !== 'all' && tickedLeagues.length > 0 && !tickedLeagues.includes(post.competition)) return false;
-
-        // Format filter
         if (tickedFormats.length > 0 && !tickedFormats.includes(post.type)) return false;
-
-        // Search query
         if (searchQuery && !post.title?.toLowerCase().includes(searchQuery) && !post.competition?.toLowerCase().includes(searchQuery)) return false;
-
         return true;
       });
 
@@ -312,14 +288,15 @@
         return;
       }
 
-      grid.innerHTML = filtered.map(post => {
+      grid.innerHTML = filtered.map((post, index) => {
         const isVideo = post.type === 'video' || post.media_url.endsWith('.mp4');
         let mediaHtml = isVideo 
           ? `<video src="${post.media_url}" class="w-full h-full object-cover pointer-events-none" muted playsinline></video>`
           : `<img src="${post.media_url}" alt="${post.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500 ease-out" loading="lazy">`;
 
         const safeTitle = (post.title || '').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-        const shareText = encodeURIComponent(`Check out this sports meme: ${post.title} ${post.media_url}`);
+        const encodedUrl = encodeURIComponent(post.media_url);
+        const encodedText = encodeURIComponent(`Check out this sports meme: ${post.title} ${post.media_url}`);
 
         return `
           <div class="group bg-stadiumCard rounded-2xl overflow-hidden border border-slate-800/80 flex flex-col shadow-xl hover:border-slate-700 transition duration-300">
@@ -340,21 +317,46 @@
             <div class="p-4 flex flex-col flex-grow justify-between gap-3">
               <h3 onclick="openModal('${post.media_url}', '${safeTitle}', '${post.type}')" class="text-sm font-bold text-slate-100 line-clamp-2 cursor-pointer hover:text-neon transition leading-snug">${post.title}</h3>
               
-              <div class="flex flex-col gap-2.5 pt-2 border-t border-slate-800/80 text-xs">
-                <div class="flex items-center justify-between">
-                  <span class="text-[10px] uppercase font-black tracking-widest text-slate-500">FORWARD TO:</span>
-                  <div class="flex items-center gap-1.5">
-                    <a href="https://api.whatsapp.com/send?text=${shareText}" target="_blank" class="p-1.5 bg-slate-900 hover:bg-emerald-600 rounded-lg text-emerald-400 hover:text-white transition shadow border border-slate-800" title="WhatsApp">💬</a>
-                    <a href="viber://forward?text=${shareText}" class="p-1.5 bg-slate-900 hover:bg-purple-600 rounded-lg text-purple-400 hover:text-white transition shadow border border-slate-800" title="Viber">📞</a>
-                    <a href="https://twitter.com/intent/tweet?text=${shareText}" target="_blank" class="p-1.5 bg-slate-900 hover:bg-sky-600 rounded-lg text-sky-400 hover:text-white transition shadow border border-slate-800" title="X / Twitter">🐦</a>
-                    <button onclick="copyLink('${post.media_url}')" class="p-1.5 bg-slate-900 hover:bg-neon rounded-lg text-slate-300 hover:text-black transition shadow border border-slate-800" title="Copy Link">🔗</button>
-                  </div>
+              <!-- CONSOLIDATED SHARE BUTTON & DROPDOWN MENU -->
+              <div class="pt-2 border-t border-slate-800/80 flex justify-end relative">
+                <button onclick="toggleShareMenu(event, ${index})" class="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-xs font-bold text-slate-300 rounded-xl border border-slate-800 transition flex items-center gap-1.5 shadow">
+                  <span>Share ↗</span>
+                </button>
+
+                <!-- Dropdown Menu -->
+                <div id="share-menu-${index}" class="hidden absolute bottom-10 right-0 w-48 bg-slate-900 border border-slate-800 rounded-xl shadow-2xl z-40 py-1.5 text-xs">
+                  <a href="https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}" target="_blank" class="flex items-center gap-2 px-3.5 py-2 hover:bg-slate-800 text-slate-300 hover:text-white transition">📘 Facebook</a>
+                  <a href="https://www.instagram.com/" target="_blank" onclick="copyLink('${post.media_url}')" class="flex items-center gap-2 px-3.5 py-2 hover:bg-slate-800 text-slate-300 hover:text-white transition" title="Copies link for Instagram">📸 Instagram (Copy Link)</a>
+                  <a href="https://twitter.com/intent/tweet?text=${encodedText}" target="_blank" class="flex items-center gap-2 px-3.5 py-2 hover:bg-slate-800 text-slate-300 hover:text-white transition">✖️ X (Twitter)</a>
+                  <a href="fb-messenger://share?link=${encodedUrl}" target="_blank" class="flex items-center gap-2 px-3.5 py-2 hover:bg-slate-800 text-slate-300 hover:text-white transition">💬 Messenger</a>
+                  <a href="https://api.whatsapp.com/send?text=${encodedText}" target="_blank" class="flex items-center gap-2 px-3.5 py-2 hover:bg-slate-800 text-slate-300 hover:text-white transition">🟢 WhatsApp</a>
+                  <a href="viber://forward?text=${encodedText}" class="flex items-center gap-2 px-3.5 py-2 hover:bg-slate-800 text-slate-300 hover:text-white transition">🟣 Viber</a>
+                  <a href="sms:?body=${encodedText}" class="flex items-center gap-2 px-3.5 py-2 hover:bg-slate-800 text-slate-300 hover:text-white transition">📱 SMS</a>
+                  <a href="mailto:?subject=Check out this sports meme&body=${encodedText}" class="flex items-center gap-2 px-3.5 py-2 hover:bg-slate-800 text-slate-300 hover:text-white transition">📧 Email</a>
+                  <a href="https://www.tiktok.com/" target="_blank" onclick="copyLink('${post.media_url}')" class="flex items-center gap-2 px-3.5 py-2 hover:bg-slate-800 text-slate-300 hover:text-white transition" title="Copies link for TikTok">🎵 TikTok (Copy Link)</a>
                 </div>
               </div>
+
             </div>
           </div>
         `;
       }).join('');
+    }
+
+    function toggleShareMenu(event, index) {
+      event.stopPropagation();
+      // Close all other open menus first
+      document.querySelectorAll('[id^="share-menu-"]').forEach((menu, i) => {
+        if (i !== index) menu.classList.add('hidden');
+      });
+      const menu = document.getElementById(`share-menu-${index}`);
+      menu.classList.toggle('hidden');
+    }
+
+    function closeAllShareMenus(event) {
+      document.querySelectorAll('[id^="share-menu-"]').forEach(menu => {
+        menu.classList.add('hidden');
+      });
     }
 
     function openModal(url, title, type) {
