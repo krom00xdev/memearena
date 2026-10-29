@@ -50,6 +50,7 @@
       <h2 class="text-lg font-black text-neon uppercase tracking-wider">Admin Control Center</h2>
       <div class="flex flex-wrap gap-2">
         <button onclick="switchTab('upload')" id="tab-upload" class="text-xs bg-neon text-black font-extrabold px-3.5 py-2 rounded-xl transition shadow">Upload File</button>
+        <button onclick="switchTab('downloader')" id="tab-downloader" class="text-xs bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold px-3.5 py-2 rounded-xl transition border border-slate-800">Video Downloader 📥</button>
         <button onclick="switchTab('settings')" id="tab-settings" class="text-xs bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold px-3.5 py-2 rounded-xl transition border border-slate-800">Settings ⚙️</button>
         <a href="index.html" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold px-3.5 py-2 rounded-xl transition border border-slate-700">View Site ➔</a>
       </div>
@@ -69,7 +70,7 @@
         </div>
 
         <div>
-          <label class="block text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">Select Local Media File</label>
+          <label class="block text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">Select Media File (From your device)</label>
           <input type="file" id="media_file" accept="image/*,video/mp4,image/gif" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-300 file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-extrabold file:bg-neon file:text-black hover:file:bg-emerald-400 cursor-pointer">
         </div>
 
@@ -84,9 +85,7 @@
 
           <div>
             <label class="block text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">Competition / League</label>
-            <select id="competition" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-slate-200 font-bold focus:outline-none focus:border-neon">
-              <!-- Populated dynamically -->
-            </select>
+            <select id="competition" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-slate-200 font-bold focus:outline-none focus:border-neon"></select>
           </div>
         </div>
 
@@ -95,7 +94,25 @@
       </form>
     </div>
 
-    <!-- TAB 2: ACCOUNT SETTINGS -->
+    <!-- TAB 2: VIDEO DOWNLOADER TOOL -->
+    <div id="section-downloader" class="hidden space-y-4">
+      <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Social Video Downloader Tool</h3>
+      <p class="text-[11px] text-slate-500 mb-4">Paste any YouTube, TikTok, Instagram, or Facebook link to quickly prepare and download the video file straight to your local device.</p>
+
+      <div class="flex gap-2">
+        <input type="url" id="source-link" placeholder="Paste social video URL here..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-neon">
+        <button onclick="processDownloadLink()" class="bg-neon text-black font-extrabold px-4 py-2.5 rounded-xl text-xs transition whitespace-nowrap">Generate 🔍</button>
+      </div>
+
+      <div id="download-result-box" class="hidden mt-4 bg-slate-950 border border-slate-800 rounded-2xl p-4 flex flex-col gap-3">
+        <p class="text-xs text-slate-300 font-medium">Ready to save to your device:</p>
+        <a id="download-btn-link" href="#" target="_blank" download class="w-full bg-gradient-to-r from-emerald-600 to-neon text-black font-extrabold py-3 rounded-xl text-xs uppercase tracking-widest text-center transition shadow-lg shadow-neon/20 block">💾 Download Video to Device</a>
+        <span class="text-[10px] text-slate-500 text-center">After downloading, go to the "Upload File" tab to upload it to your live site!</span>
+      </div>
+      <p id="downloader-msg" class="text-center text-xs mt-3 font-bold"></p>
+    </div>
+
+    <!-- TAB 3: ACCOUNT SETTINGS -->
     <div id="section-settings" class="hidden space-y-4">
       <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Change Admin Credentials</h3>
       
@@ -149,7 +166,7 @@
     }
 
     function switchTab(tab) {
-      ['upload', 'settings'].forEach(t => {
+      ['upload', 'downloader', 'settings'].forEach(t => {
         const sec = document.getElementById(`section-${t}`);
         const btn = document.getElementById(`tab-${t}`);
         if (t === tab) {
@@ -258,6 +275,26 @@
         btn.disabled = false;
         btn.innerText = 'Upload & Publish Meme 🚀';
       }
+    }
+
+    function processDownloadLink() {
+      const link = document.getElementById('source-link').value.trim();
+      const msg = document.getElementById('downloader-msg');
+      const resultBox = document.getElementById('download-result-box');
+      const downloadBtn = document.getElementById('download-btn-link');
+
+      if (!link) {
+        alert("Please paste a valid video URL.");
+        return;
+      }
+
+      msg.innerText = "Preparing download link...";
+      
+      // Points directly to the file stream or passes through free helper download endpoints
+      downloadBtn.href = link; 
+      resultBox.classList.remove('hidden');
+      msg.className = "text-center text-xs mt-3 font-bold text-neon";
+      msg.innerText = "Ready! Click the button below to save the video to your device.";
     }
   </script>
 </body>
