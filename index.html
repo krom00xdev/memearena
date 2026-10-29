@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ultimate Sports Memes Hub</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-zinc-950 text-white min-h-screen flex flex-col">
+  
+  <!-- Top Advertisement Banner Space -->
+  <div class="w-full bg-zinc-900 border-b border-zinc-800 py-2 px-4 text-center">
+    <div class="max-w-4xl mx-auto bg-zinc-950 border border-dashed border-zinc-800 rounded-lg p-3 text-xs text-zinc-500 flex items-center justify-center gap-2">
+      <span class="bg-zinc-800 text-zinc-400 text-[10px] px-1.5 py-0.5 rounded uppercase font-bold tracking-wider">Sponsored / Ad</span>
+      <span>Top Leaderboard Banner Space (728x90 / Responsive AdSense)</span>
+    </div>
+  </div>
+
+  <!-- Header & Navigation -->
+  <header class="border-b border-zinc-800 p-4 sticky top-0 bg-zinc-950/95 backdrop-blur z-20 shadow-md">
+    <div class="max-w-6xl mx-auto flex flex-col gap-4">
+      
+      <div class="flex justify-between items-center">
+        <h1 class="text-xl font-extrabold tracking-wider text-emerald-400 flex items-center gap-2">⚽🏀 SPORTS MEMES HUB</h1>
+        <div class="flex items-center gap-4">
+          <span id="item-count" class="text-xs text-zinc-400 font-medium">Loading...</span>
+          <a href="admin.html" class="text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-300 px-3 py-1.5 rounded-lg border border-zinc-700 transition font-medium">Admin Panel ⚙️</a>
+        </div>
+      </div>
+
+      <!-- Main Sport Filter Bar -->
+      <div class="flex flex-wrap items-center gap-2 pt-2 border-t border-zinc-800/80">
+        <button onclick="selectSport('all')" id="sport-all" class="px-4 py-1.5 bg-emerald-600 rounded-lg text-sm font-bold transition shadow">All Sports</button>
+        <button onclick="selectSport('football')" id="sport-football" class="px-4 py-1.5 bg-zinc-900 hover:bg-zinc-800 rounded-lg text-sm font-bold transition border border-zinc-800">Football ⚽</button>
+        <button onclick="selectSport('basketball')" id="sport-basketball" class="px-4 py-1.5 bg-zinc-900 hover:bg-zinc-800 rounded-lg text-sm font-bold transition border border-zinc-800">Basketball 🏀</button>
+      </div>
+
+      <!-- Dynamic Subfilters (Leagues / Competitions) -->
+      <div id="subfilter-container" class="flex flex-wrap items-center gap-1.5 pt-1 hidden">
+        <span class="text-xs text-zinc-400 font-semibold mr-1">Competition:</span>
+        <div id="subfilter-buttons" class="flex flex-wrap gap-1.5"></div>
+      </div>
+
+      <!-- Media Type Filter Bar -->
+      <div class="flex flex-wrap items-center gap-2 pt-1 border-t border-zinc-800/50 text-xs">
+        <span class="text-zinc-400 font-semibold mr-1">Format:</span>
+        <button onclick="selectType('all')" id="type-all" class="px-3 py-1 bg-zinc-800 text-white rounded font-medium transition">All Formats</button>
+        <button onclick="selectType('image')" id="type-image" class="px-3 py-1 bg-zinc-900 hover:bg-zinc-800 text-zinc-400 rounded font-medium transition border border-zinc-800">Pictures 🖼️</button>
+        <button onclick="selectType('gif')" id="type-gif" class="px-3 py-1 bg-zinc-900 hover:bg-zinc-800 text-zinc-400 rounded font-medium transition border border-zinc-800">GIFs 🎞️</button>
+        <button onclick="selectType('video')" id="type-video" class="px-3 py-1 bg-zinc-900 hover:bg-zinc-800 text-zinc-400 rounded font-medium transition border border-zinc-800">Videos 🎬</button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Feed Grid -->
+  <main class="max-w-6xl mx-auto p-4 flex-grow w-full">
+    <div id="loading" class="text-center py-20 text-zinc-400 animate-pulse">Loading memes from database...</div>
+    <div id="feed-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"></div>
+  </main>
+
+  <!-- In-Feed Ad Slot Example -->
+  <div class="max-w-6xl mx-auto px-4 py-6 w-full">
+    <div class="bg-zinc-900 border border-dashed border-zinc-800 rounded-xl p-6 text-center text-xs text-zinc-500 flex flex-col items-center justify-center gap-2">
+      <span class="bg-zinc-800 text-zinc-400 text-[10px] px-2 py-0.5 rounded uppercase font-bold tracking-wider">Advertisement Slot</span>
+      <span>In-Feed Native Ad Banner / Sponsored Content Space</span>
+    </div>
+  </div>
+
+  <!-- Fullscreen Preview Modal -->
+  <div id="media-modal" class="fixed inset-0 bg-black/90 z-50 hidden flex-col items-center justify-center p-4">
+    <button onclick="closeModal()" class="absolute top-6 right-6 text-zinc-400 hover:text-white text-3xl font-bold bg-zinc-900/80 px-3 py-1.5 rounded-full">&times;</button>
+    <div class="max-w-4xl max-h-[80vh] w-full flex items-center justify-center overflow-hidden rounded-xl bg-zinc-900 border border-zinc-800">
+      <div id="modal-content" class="w-full flex items-center justify-center p-2"></div>
+    </div>
+    <p id="modal-title" class="text-zinc-200 mt-4 text-center font-medium max-w-xl text-lg"></p>
+  </div>
+
+  <div id="toast" class="fixed bottom-6 right-6 bg-emerald-600 text-white px-4 py-2 rounded-lg shadow-lg hidden z-50 text-sm font-medium transition">Link copied to clipboard!</div>
+
+  <!-- Supabase Client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = 'https://ayfkiofamrnnsmerfcpf.supabase.co';
+    const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_67CCvUlVyJCJukihrXheHg_CNCiP5VM';
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
+    const subfilters = {
+      football: ['Premier League', 'La Liga', 'Serie A', 'Bundesliga', 'Ligue 1', 'Eredivisie', 'Primeira Liga', 'Belgian Pro League', 'Greek Super League'],
+      basketball: ['NBA', 'EuroLeague', 'National Teams']
+    };
+
+    let activeSport = 'all';
+    let activeSub = 'all';
+    let activeType = 'all';
+    let allPosts = [];
+
+    async function fetchMemes() {
+      const { data, error } = await supabaseClient.from('posts').select('*').order('created_at', { ascending: false });
+      document.getElementById('loading').style.display = 'none';
+
+      if (error) {
+        document.getElementById('feed-grid').innerHTML = `<p class="text-red-500 col-span-full text-center">Error loading posts: ${error.message}</p>`;
+        return;
+      }
+      allPosts = data || [];
+      renderFeed();
+    }
+
+    function selectSport(sport) {
+      activeSport = sport;
+      activeSub = 'all';
+
+      ['all', 'football', 'basketball'].forEach(s => {
+        const btn = document.getElementById(`sport-${s}`);
+        btn.className = s === sport ? "px-4 py-1.5 bg-emerald-600 rounded-lg text-sm font-bold transition shadow" : "px-4 py-1.5 bg-zinc-900 hover:bg-zinc-800 rounded-lg text-sm font-bold transition border border-zinc-800";
+      });
+
+      const subContainer = document.getElementById('subfilter-container');
+      const subButtons = document.getElementById('subfilter-buttons');
+      
+      if (sport === 'all') {
+        subContainer.classList.add('hidden');
+      } else {
+        subContainer.classList.remove('hidden');
+        let html = `<button onclick="selectSub('all')" id="sub-all" class="px-3 py-1 bg-emerald-600 rounded text-xs font-semibold transition">All ${sport === 'football' ? 'Football' : 'Basketball'}</button>`;
+        subfilters[sport].forEach(sub => {
+          html += `<button onclick="selectSub('${sub}')" id="sub-${sub}" class="px-3 py-1 bg-zinc-900 hover:bg-zinc-800 rounded text-xs font-semibold transition border border-zinc-800">${sub}</button>`;
+        });
+        subButtons.innerHTML = html;
+      }
+
+      renderFeed();
+    }
+
+    function selectSub(sub) {
+      activeSub = sub;
+      if (activeSport !== 'all') {
+        const list = ['all', ...subfilters[activeSport]];
+        list.forEach(s => {
+          const btn = document.getElementById(`sub-${s}`);
+          if (btn) {
+            btn.className = s === sub ? "px-3 py-1 bg-emerald-600 rounded text-xs font-semibold transition" : "px-3 py-1 bg-zinc-900 hover:bg-zinc-800 rounded text-xs font-semibold transition border border-zinc-800";
+          }
+        });
+      }
+      renderFeed();
+    }
+
+    function selectType(type) {
+      activeType = type;
+      ['all', 'image', 'gif', 'video'].forEach(t => {
+        const btn = document.getElementById(`type-${t}`);
+        btn.className = t === type ? "px-3 py-1 bg-emerald-600 text-white rounded font-medium transition" : "px-3 py-1 bg-zinc-900 hover:bg-zinc-800 text-zinc-400 rounded font-medium transition border border-zinc-800";
+      });
+      renderFeed();
+    }
+
+    function renderFeed() {
+      const grid = document.getElementById('feed-grid');
+      
+      const filtered = allPosts.filter(post => {
+        if (activeSport !== 'all' && post.sport !== activeSport) return false;
+        if (activeSub !== 'all' && post.competition !== activeSub) return false;
+        if (activeType !== 'all' && post.type !== activeType) return false;
+        return true;
+      });
+
+      document.getElementById('item-count').innerText = `${filtered.length} items`;
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '<p class="text-zinc-500 col-span-full text-center py-20">No memes found matching these filters.</p>';
+        return;
+      }
+
+      grid.innerHTML = filtered.map(post => {
+        const isVideo = post.type === 'video' || post.media_url.endsWith('.mp4');
+        let mediaHtml = isVideo 
+          ? `<video src="${post.media_url}" class="w-full h-full object-cover pointer-events-none" muted playsinline></video>`
+          : `<img src="${post.media_url}" alt="${post.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" loading="lazy">`;
+
+        const safeTitle = (post.title || '').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+        const shareText = encodeURIComponent(`Check out this sports meme: ${post.title} ${post.media_url}`);
+
+        return `
+          <div class="group bg-zinc-900 rounded-xl overflow-hidden border border-zinc-800 flex flex-col shadow-lg">
+            <div onclick="openModal('${post.media_url}', '${safeTitle}', '${post.type}')" class="h-64 bg-zinc-950 flex items-center justify-center overflow-hidden relative cursor-pointer">
+              ${mediaHtml}
+              <span class="absolute bottom-2 left-2 text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-black/75 text-white backdrop-blur">
+                ${post.type} • ${post.competition || post.sport}
+              </span>
+            </div>
+
+            <div class="p-4 flex flex-col flex-grow justify-between">
+              <h3 onclick="openModal('${post.media_url}', '${safeTitle}', '${post.type}')" class="text-sm font-medium text-zinc-200 mb-3 line-clamp-2 cursor-pointer hover:text-emerald-400 transition">${post.title}</h3>
+              
+              <div class="flex flex-col gap-2 mt-auto pt-3 border-t border-zinc-800/80 text-xs">
+                <div class="flex justify-between items-center text-zinc-400 font-semibold">
+                  <span>${post.sport.toUpperCase()}</span>
+                  <span class="text-emerald-400">${post.competition || ''}</span>
+                </div>
+
+                <!-- Share Buttons -->
+                <div class="flex items-center justify-between pt-2 border-t border-zinc-800/40">
+                  <span class="text-zinc-500">Forward:</span>
+                  <div class="flex items-center gap-2">
+                    <a href="https://api.whatsapp.com/send?text=${shareText}" target="_blank" class="p-1.5 bg-zinc-800 hover:bg-emerald-600 rounded-full text-emerald-400 hover:text-white transition" title="WhatsApp">💬</a>
+                    <a href="viber://forward?text=${shareText}" class="p-1.5 bg-zinc-800 hover:bg-purple-600 rounded-full text-purple-400 hover:text-white transition" title="Viber">📞</a>
+                    <a href="https://twitter.com/intent/tweet?text=${shareText}" target="_blank" class="p-1.5 bg-zinc-800 hover:bg-sky-600 rounded-full text-sky-400 hover:text-white transition" title="X / Twitter">🐦</a>
+                    <button onclick="copyLink('${post.media_url}')" class="p-1.5 bg-zinc-800 hover:bg-emerald-600 rounded-full text-zinc-300 hover:text-white transition" title="Copy Link">🔗</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function openModal(url, title, type) {
+      const modal = document.getElementById('media-modal');
+      const content = document.getElementById('modal-content');
+      document.getElementById('modal-title').innerText = title;
+      content.innerHTML = (type === 'video' || url.endsWith('.mp4'))
+        ? `<video src="${url}" class="max-h-[75vh] w-auto rounded" controls autoplay playsinline></video>`
+        : `<img src="${url}" alt="${title}" class="max-h-[75vh] w-auto object-contain rounded">`;
+      modal.style.display = 'flex';
+    }
+
+    function closeModal() {
+      document.getElementById('media-modal').style.display = 'none';
+      document.getElementById('modal-content').innerHTML = '';
+    }
+
+    function copyLink(url) {
+      navigator.clipboard.writeText(url).then(() => {
+        const toast = document.getElementById('toast');
+        toast.style.display = 'block';
+        setTimeout(() => toast.style.display = 'none', 2000);
+      });
+    }
+
+    fetchMemes();
+  </script>
+</body>
+</html>
