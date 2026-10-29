@@ -44,13 +44,14 @@
   </div>
 
   <!-- MAIN DASHBOARD CONTAINER -->
-  <div id="dashboard" class="bg-stadiumCard border border-slate-800 p-6 sm:p-8 rounded-2xl max-w-2xl w-full shadow-2xl hidden my-8">
+  <div id="dashboard" class="bg-stadiumCard border border-slate-800 p-6 sm:p-8 rounded-2xl max-w-3xl w-full shadow-2xl hidden my-8">
     
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 border-b border-slate-800 pb-4">
       <h2 class="text-lg font-black text-neon uppercase tracking-wider">Admin Control Center</h2>
       <div class="flex flex-wrap gap-2">
         <button onclick="switchTab('upload')" id="tab-upload" class="text-xs bg-neon text-black font-extrabold px-3.5 py-2 rounded-xl transition shadow">Upload File</button>
-        <button onclick="switchTab('downloader')" id="tab-downloader" class="text-xs bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold px-3.5 py-2 rounded-xl transition border border-slate-800">Video Downloader 📥</button>
+        <button onclick="switchTab('manage')" id="tab-manage" class="text-xs bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold px-3.5 py-2 rounded-xl transition border border-slate-800">Manage Posts 🗑️</button>
+        <button onclick="switchTab('downloader')" id="tab-downloader" class="text-xs bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold px-3.5 py-2 rounded-xl transition border border-slate-800">Downloader 📥</button>
         <button onclick="switchTab('settings')" id="tab-settings" class="text-xs bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold px-3.5 py-2 rounded-xl transition border border-slate-800">Settings ⚙️</button>
         <a href="index.html" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold px-3.5 py-2 rounded-xl transition border border-slate-700">View Site ➔</a>
       </div>
@@ -70,7 +71,7 @@
         </div>
 
         <div>
-          <label class="block text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">Select Media File (From your device)</label>
+          <label class="block text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">Select Media File</label>
           <input type="file" id="media_file" accept="image/*,video/mp4,image/gif" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-300 file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-extrabold file:bg-neon file:text-black hover:file:bg-emerald-400 cursor-pointer">
         </div>
 
@@ -94,7 +95,20 @@
       </form>
     </div>
 
-    <!-- TAB 2: VIDEO DOWNLOADER TOOL -->
+    <!-- TAB 2: MANAGE & DELETE POSTS -->
+    <div id="section-manage" class="hidden space-y-4">
+      <div class="flex justify-between items-center mb-2">
+        <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider">Manage Uploaded Memes</h3>
+        <button onclick="fetchManagePosts()" class="text-[11px] bg-slate-900 border border-slate-800 px-2.5 py-1 rounded-lg text-slate-300 hover:text-white">Refresh List 🔄</button>
+      </div>
+
+      <div id="manage-loading" class="text-center py-8 text-slate-500 text-xs font-bold animate-pulse">Loading uploaded entries...</div>
+      
+      <div id="manage-posts-list" class="space-y-3 max-h-[500px] overflow-y-auto pr-1"></div>
+      <p id="manage-msg" class="text-center text-xs mt-3 font-bold"></p>
+    </div>
+
+    <!-- TAB 3: VIDEO DOWNLOADER TOOL -->
     <div id="section-downloader" class="hidden space-y-4">
       <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Social Video Downloader Tool</h3>
       <p class="text-[11px] text-slate-500 mb-4">Paste any YouTube, TikTok, Instagram, or Facebook link to quickly prepare and download the video file straight to your local device.</p>
@@ -112,7 +126,7 @@
       <p id="downloader-msg" class="text-center text-xs mt-3 font-bold"></p>
     </div>
 
-    <!-- TAB 3: ACCOUNT SETTINGS -->
+    <!-- TAB 4: ACCOUNT SETTINGS -->
     <div id="section-settings" class="hidden space-y-4">
       <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Change Admin Credentials</h3>
       
@@ -166,7 +180,7 @@
     }
 
     function switchTab(tab) {
-      ['upload', 'downloader', 'settings'].forEach(t => {
+      ['upload', 'manage', 'downloader', 'settings'].forEach(t => {
         const sec = document.getElementById(`section-${t}`);
         const btn = document.getElementById(`tab-${t}`);
         if (t === tab) {
@@ -178,7 +192,9 @@
         }
       });
       
-      if(tab === 'settings') {
+      if(tab === 'manage') {
+        fetchManagePosts();
+      } else if(tab === 'settings') {
         const creds = getCredentials();
         document.getElementById('new-username').value = creds.user;
       }
@@ -277,6 +293,78 @@
       }
     }
 
+    async function fetchManagePosts() {
+      const container = document.getElementById('manage-posts-list');
+      const loader = document.getElementById('manage-loading');
+      loader.style.display = 'block';
+      container.innerHTML = '';
+
+      const { data, error } = await supabaseClient.from('posts').select('*').order('created_at', { ascending: false });
+      loader.style.display = 'none';
+
+      if (error) {
+        container.innerHTML = `<p class="text-red-400 text-xs text-center">Error fetching posts: ${error.message}</p>`;
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        container.innerHTML = '<p class="text-slate-500 text-xs text-center py-6">No uploaded posts found in database.</p>';
+        return;
+      }
+
+      container.innerHTML = data.map(post => {
+        const isVideo = post.type === 'video' || post.media_url.endsWith('.mp4');
+        const mediaTag = isVideo 
+          ? `<video src="${post.media_url}" class="w-12 h-12 object-cover rounded-lg bg-black"></video>`
+          : `<img src="${post.media_url}" class="w-12 h-12 object-cover rounded-lg bg-black">`;
+
+        return `
+          <div class="bg-slate-950 border border-slate-800/80 p-3 rounded-xl flex items-center justify-between gap-3">
+            <div class="flex items-center gap-3 overflow-hidden">
+              ${mediaTag}
+              <div class="flex flex-col truncate">
+                <span class="text-xs font-bold text-slate-200 truncate">${post.title}</span>
+                <span class="text-[10px] text-amber-400 uppercase font-semibold">${post.sport} • ${post.competition}</span>
+              </div>
+            </div>
+            <button onclick="deletePost('${post.id}', '${post.media_url}')" class="bg-red-600/20 hover:bg-red-600 text-red-400 hover:text-white border border-red-500/30 px-3 py-1.5 rounded-lg text-xs font-bold transition whitespace-nowrap">
+              Delete 🗑️
+            </button>
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function deletePost(postId, mediaUrl) {
+      if (!confirm('Are you sure you want to permanently delete this post?')) return;
+
+      const msg = document.getElementById('manage-msg');
+      msg.className = "text-center text-xs mt-3 font-bold text-amber-400";
+      msg.innerText = "Deleting post...";
+
+      try {
+        // Delete record from database table
+        const { error: dbError } = await supabaseClient.from('posts').delete().eq('id', postId);
+        if (dbError) throw dbError;
+
+        // Extract storage file path if stored in Supabase
+        if (mediaUrl.includes('/memes/')) {
+          const filePath = mediaUrl.split('/memes/pop/')[1] || mediaUrl.split('/memes/')[1];
+          if (filePath) {
+            await supabaseClient.storage.from('memes').remove([filePath]);
+          }
+        }
+
+        msg.className = "text-center text-xs mt-3 font-bold text-neon";
+        msg.innerText = "Post deleted successfully!";
+        fetchManagePosts();
+
+      } catch (err) {
+        msg.className = "text-center text-xs mt-3 font-bold text-red-400";
+        msg.innerText = `Delete error: ${err.message}`;
+      }
+    }
+
     function processDownloadLink() {
       const link = document.getElementById('source-link').value.trim();
       const msg = document.getElementById('downloader-msg');
@@ -289,8 +377,6 @@
       }
 
       msg.innerText = "Preparing download link...";
-      
-      // Points directly to the file stream or passes through free helper download endpoints
       downloadBtn.href = link; 
       resultBox.classList.remove('hidden');
       msg.className = "text-center text-xs mt-3 font-bold text-neon";
